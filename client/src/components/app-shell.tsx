@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router"
+import Sidebar from "./sidebar"
 
 type AppShellProps = {
   children: React.ReactNode
@@ -6,20 +6,10 @@ type AppShellProps = {
 
 const AppShell = ({ children }: AppShellProps) => {
   return (
-    <>
-      <div className="p-2 flex justify-between max-w-2xl m-auto">
-        <h1 className="text-2xl font-bold">Bookio</h1>
-        <div className="flex gap-2 ">
-          <Link to="/" className="[&.active]:font-bold">
-            Calendar
-          </Link>
-          <Link to="/groups" className="[&.active]:font-bold">
-            Groups
-          </Link>
-        </div>
-      </div>
-      <div className="p-2 max-w-2xl ">{children}</div>
-    </>
+    <div className="flex">
+      <Sidebar />
+      <div className="flex-1 p-4">{children}</div>
+    </div>
   )
 }
 
