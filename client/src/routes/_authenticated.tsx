@@ -1,5 +1,27 @@
-import { createFileRoute } from "@tanstack/react-router"
+import Unauthorized from "@/components/unauthorized"
+import { userQueryOptions } from "@/lib/api/user"
+import { Outlet, createFileRoute } from "@tanstack/react-router"
+
+function Component() {
+  const { user } = Route.useRouteContext()
+
+  if (!user) {
+    return <Unauthorized />
+  }
+
+  return <Outlet />
+}
 
 export const Route = createFileRoute("/_authenticated")({
-  component: () => <div>Hello /_authenticated!</div>,
+  beforeLoad: async ({ context }) => {
+    const queryClient = context.queryClient
+
+    try {
+      const data = await queryClient.fetchQuery(userQueryOptions)
+      return data
+    } catch (e) {
+      return { user: null }
+    }
+  },
+  component: Component,
 })
