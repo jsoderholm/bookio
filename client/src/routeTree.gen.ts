@@ -10,19 +10,64 @@
 
 // Import Routes
 
-import { Route as rootRoute } from "./routes/__root"
+import { Route as rootRoute } from './routes/__root'
+import { Route as AuthenticatedImport } from './routes/_authenticated'
+import { Route as AuthenticatedIndexImport } from './routes/_authenticated/index'
+import { Route as AuthenticatedGroupsImport } from './routes/_authenticated/groups'
 
 // Create/Update Routes
 
+const AuthenticatedRoute = AuthenticatedImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AuthenticatedIndexRoute = AuthenticatedIndexImport.update({
+  path: '/',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+
+const AuthenticatedGroupsRoute = AuthenticatedGroupsImport.update({
+  path: '/groups',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
-declare module "@tanstack/react-router" {
-  type FileRoutesByPath = {}
+declare module '@tanstack/react-router' {
+  interface FileRoutesByPath {
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthenticatedImport
+      parentRoute: typeof rootRoute
+    }
+    '/_authenticated/groups': {
+      id: '/_authenticated/groups'
+      path: '/groups'
+      fullPath: '/groups'
+      preLoaderRoute: typeof AuthenticatedGroupsImport
+      parentRoute: typeof AuthenticatedImport
+    }
+    '/_authenticated/': {
+      id: '/_authenticated/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedIndexImport
+      parentRoute: typeof AuthenticatedImport
+    }
+  }
 }
 
 // Create and export the route tree
 
-export const routeTree = rootRoute.addChildren({})
+export const routeTree = rootRoute.addChildren({
+  AuthenticatedRoute: AuthenticatedRoute.addChildren({
+    AuthenticatedGroupsRoute,
+    AuthenticatedIndexRoute,
+  }),
+})
 
 /* prettier-ignore-end */
 
@@ -30,7 +75,25 @@ export const routeTree = rootRoute.addChildren({})
 {
   "routes": {
     "__root__": {
-      "children": []
+      "filePath": "__root.tsx",
+      "children": [
+        "/_authenticated"
+      ]
+    },
+    "/_authenticated": {
+      "filePath": "_authenticated.tsx",
+      "children": [
+        "/_authenticated/groups",
+        "/_authenticated/"
+      ]
+    },
+    "/_authenticated/groups": {
+      "filePath": "_authenticated/groups.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/": {
+      "filePath": "_authenticated/index.tsx",
+      "parent": "/_authenticated"
     }
   }
 }
