@@ -5,6 +5,7 @@ import ReactDOM from "react-dom/client"
 import { routeTree } from "./routeTree.gen.ts"
 
 import "./styles/index.css"
+import { TooltipProvider } from "./components/ui/tooltip.tsx"
 
 const queryClient = new QueryClient()
 const router = createRouter({ routeTree, context: { queryClient } })
@@ -21,9 +22,11 @@ if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)
   root.render(
     <StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
-      </QueryClientProvider>
+      <TooltipProvider>
+        <QueryClientProvider client={queryClient}>
+          <RouterProvider router={router} />
+        </QueryClientProvider>
+      </TooltipProvider>
     </StrictMode>,
   )
 }
