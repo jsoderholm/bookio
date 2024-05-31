@@ -36,9 +36,9 @@ const SidebarItem = ({ to, title, icon: Icon }: SidebarItemProps) => {
 const Sidebar = () => {
   return (
     <aside className="sticky h-screen inset-y-0 left-0 z-10 hidden w-24 flex-col border-r sm:flex">
-      <nav className="flex flex-col h-full items-center gap-y-4 px-6 sm:py-5">
+      <nav className="flex flex-col h-full items-center gap-y-4 px-8 sm:py-5">
         <img src="/logo.svg" alt="Acme Inc" className="w-full" />
-        <Separator className="my-4" />
+        <Separator className="my-10" />
         <SidebarItem title="Calendar" to="/" icon={IconCalendar} />
         <SidebarItem title="Groups" to="/groups" icon={IconUsers} />
         <Tooltip>

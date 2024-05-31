@@ -12,6 +12,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.7.3",
+    "@flydotio/dockerfile": "^0.5.7",
     "@types/bun": "latest"
   },
   "peerDependencies": {
