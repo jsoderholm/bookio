@@ -16,8 +16,7 @@
       "correctness": {
         "noUnusedImports": "warn"
       }
-    },
-    "ignore": ["./client/src/routeTree.gen.ts"]
+    }
   },
   "javascript": {
     "formatter": {
@@ -28,5 +27,8 @@
     "enabled": true,
     "clientKind": "git",
     "useIgnoreFile": true
+  },
+  "files": {
+    "ignore": ["*/src/routeTree.gen.ts"]
   }
 }
