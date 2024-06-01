@@ -29,6 +29,7 @@ COPY --link migrate.ts drizzle.config.ts ./
 
 # Copy all files in server/db/schema/
 COPY --link server/db/schema/ ./
+
 RUN bun migrate
 
 # Install client node modules
