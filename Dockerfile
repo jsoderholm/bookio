@@ -25,6 +25,7 @@ COPY --link bun.lockb package.json ./
 RUN bun install --ci
 
 # Migrate database
+COPY --link migrate.ts drizzle.config.ts ./
 RUN bun migrate
 
 # Install client node modules
