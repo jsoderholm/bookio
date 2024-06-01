@@ -11,6 +11,6 @@ jobs:
     steps:
       - uses: Slashgear/action-check-pr-title@v4.3.0
         with:
-          regexp: "(Add|Remove|Refactor|Fix|Document) #\\d* .*" # Regex the title should match.
+          regexp: "(Add|Remove|Refactor|Fix|Document|Update|Implement) #\\d* .*" # Regex the title should match.
           flags: "g"
           helpMessage: "Example: 'Add #3 README.md'"
