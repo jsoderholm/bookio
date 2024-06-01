@@ -5,6 +5,7 @@ import ReactDOM from "react-dom/client"
 import { routeTree } from "./routeTree.gen.ts"
 
 import "./styles/index.css"
+import { ThemeProvider } from "./components/theme-provider.tsx"
 import { TooltipProvider } from "./components/ui/tooltip.tsx"
 
 const queryClient = new QueryClient()
@@ -22,11 +23,13 @@ if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)
   root.render(
     <StrictMode>
-      <TooltipProvider>
-        <QueryClientProvider client={queryClient}>
-          <RouterProvider router={router} />
-        </QueryClientProvider>
-      </TooltipProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider defaultTheme="light" storageKey="bookio-ui-theme">
+          <TooltipProvider>
+            <RouterProvider router={router} />
+          </TooltipProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
     </StrictMode>,
   )
 }
