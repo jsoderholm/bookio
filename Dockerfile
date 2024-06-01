@@ -24,14 +24,6 @@ RUN apt-get update -qq && \
 COPY --link bun.lockb package.json ./
 RUN bun install --ci
 
-# Migrate database
-COPY --link migrate.ts drizzle.config.ts ./
-
-# Copy all files in server/db/schema/
-COPY --link server/db/schema/ ./
-
-RUN bun migrate
-
 # Install client node modules
 COPY --link client/bun.lockb client/package.json ./client/
 RUN cd client && bun install --ci
