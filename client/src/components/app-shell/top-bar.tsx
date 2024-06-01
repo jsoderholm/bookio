@@ -15,7 +15,7 @@ import Notifications from "./notifications"
 
 const TopBar = () => {
   return (
-    <nav className="fixed top-0 left-0 right-0 flex items-center justify-between h-20 sm:h-24 px-4 border-b sm:ml-24 bg-background ">
+    <nav className="fixed top-0 z-10 left-0 right-0 flex items-center justify-between h-20 sm:h-24 px-4 border-b sm:ml-24 bg-background ">
       <Sheet>
         <SheetTrigger className="block sm:hidden" asChild>
           <Button size="icon" variant="ghost">
