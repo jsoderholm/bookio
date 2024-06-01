@@ -12,7 +12,7 @@ const Sidebar = () => {
   return (
     <aside className="sticky inset-y-0 left-0 z-10 flex-col hidden w-24 h-screen pb-4 border-r bg-neutral dark:bg-background sm:flex">
       <div className="flex items-center justify-center aspect-square">
-        <img src="/logo.svg" alt="Acme Inc" className="w-12" />
+        <img src="/logo-small.svg" alt="Acme Inc" className="w-12" />
       </div>
       <Separator className="w-1/2 mx-auto" />
       <div className="flex flex-col items-center mt-6 gap-y-6">

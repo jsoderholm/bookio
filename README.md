@@ -1,5 +1,5 @@
 <!-- ⚠️ This README has been generated from the file(s) "blueprint.md" ⚠️--><p align="center">
-  <img src="./client/public/logo.svg" alt="Logo" width="150" height="150" />
+  <img src="./client/public/logo-small.svg" alt="Logo" width="150" height="150" />
 </p>
 <h1 align="center">bookio</h1>
 <p align="center">

@@ -8,11 +8,15 @@ import {
   CommandSeparator,
   CommandShortcut,
 } from "@/components/ui/command"
+import type { BaseComponentProps } from "@/lib/common/types"
+import { cn } from "@/lib/utils"
 import { IconCalendar, IconLogout, IconUsers } from "@tabler/icons-react"
 import { useNavigate } from "@tanstack/react-router"
 import { useEffect, useState } from "react"
 
-const CommandMenu = () => {
+type CommandMenuProps = {} & BaseComponentProps
+
+const CommandMenu = ({ className }: CommandMenuProps) => {
   const [open, setOpen] = useState(false)
   const navigate = useNavigate()
 
@@ -47,14 +51,19 @@ const CommandMenu = () => {
   }, [open, navigate])
 
   return (
-    <div>
-      <p className="flex items-center text-md text-muted-foreground gap-x-2">
+    <>
+      <p
+        className={cn(
+          "items-center flex text-md text-muted-foreground ",
+          className,
+        )}
+      >
         Press{" "}
-        <kbd className="pointer-events-none inline-flex h-7 select-none items-center gap-1 rounded border bg-muted px-2 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+        <kbd className="pointer-events-none inline-flex h-7 mr-2 select-none items-center gap-1 rounded border bg-muted px-2 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
           <span className="text-sm">⌘</span>
         </kbd>
         <kbd className="pointer-events-none inline-flex h-7 select-none items-center gap-1 rounded border bg-muted px-2 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
-          <span className="text-sm">J</span>
+          <span className="text-sm">K</span>
         </kbd>
       </p>
       <CommandDialog open={open} onOpenChange={setOpen}>
@@ -95,7 +104,7 @@ const CommandMenu = () => {
           </CommandGroup>
         </CommandList>
       </CommandDialog>
-    </div>
+    </>
   )
 }
 
