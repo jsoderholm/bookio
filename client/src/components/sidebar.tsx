@@ -21,10 +21,10 @@ const SidebarItem = ({ to, title, icon: Icon }: SidebarItemProps) => {
       <TooltipTrigger asChild>
         <Link
           to={to}
-          className="flex h-11 w-11 items-center justify-center rounded-sm text-muted-foreground transition-colors hover:text-primary md:h-8 md:w-8"
+          className="flex items-center justify-center transition-colors rounded-sm h-11 w-11 text-muted-foreground hover:text-primary md:h-8 md:w-8"
           activeProps={{ className: "bg-white text-primary" }}
         >
-          <Icon className="h-5 w-5" />
+          <Icon className="w-5 h-5" />
           <span className="sr-only">{title}</span>
         </Link>
       </TooltipTrigger>
@@ -35,8 +35,8 @@ const SidebarItem = ({ to, title, icon: Icon }: SidebarItemProps) => {
 
 const Sidebar = () => {
   return (
-    <aside className="sticky h-screen inset-y-0 left-0 z-10 hidden w-24 flex-col border-r sm:flex">
-      <nav className="flex flex-col h-full items-center gap-y-4 px-8 sm:py-5">
+    <aside className="sticky inset-y-0 left-0 z-10 flex-col hidden w-24 h-screen border-r sm:flex">
+      <nav className="flex flex-col items-center h-full px-8 gap-y-4 sm:py-5">
         <img src="/logo.svg" alt="Acme Inc" className="w-full" />
         <Separator className="my-10" />
         <SidebarItem title="Calendar" to="/" icon={IconCalendar} />
@@ -46,10 +46,10 @@ const Sidebar = () => {
             <Button
               size="icon"
               variant="ghost"
-              className="mt-auto rounded-sm text-muted-foreground  transition-colors hover:text-foreground md:h-8 md:w-8"
+              className="mt-auto transition-colors rounded-sm text-muted-foreground hover:text-foreground md:h-8 md:w-8"
             >
               <a href="/api/logout">
-                <IconLogout className="h-5 w-5" />
+                <IconLogout className="w-5 h-5" />
               </a>
             </Button>
           </TooltipTrigger>

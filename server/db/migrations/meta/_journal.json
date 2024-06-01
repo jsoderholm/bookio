@@ -1,1 +1,27 @@
-{ "version": "7", "dialect": "postgresql", "entries": [] }
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1717230888616,
+      "tag": "0000_worthless_fallen_one",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1717232581744,
+      "tag": "0001_complex_blade",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1717233553052,
+      "tag": "0002_perfect_thunderbolt",
+      "breakpoints": true
+    }
+  ]
+}

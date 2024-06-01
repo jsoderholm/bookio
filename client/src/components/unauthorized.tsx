@@ -26,7 +26,7 @@ const Unauthorized = () => {
             </Button>
             <p className="text-md">
               No account?{" "}
-              <a className="font-semibold text-primary" href="/api/register">
+              <a className="font-semibold text-primary " href="/api/register">
                 Create one
               </a>
             </p>

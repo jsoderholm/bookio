@@ -1,4 +1,7 @@
+import { eq } from "drizzle-orm"
 import { Hono } from "hono"
+import { db } from "../db"
+import { users } from "../db/schema/users"
 import { getUser, kindeClient, sessionManager } from "../kinde"
 
 export const authRoute = new Hono()
@@ -22,5 +25,21 @@ export const authRoute = new Hono()
   })
   .get("/me", getUser, async (c) => {
     const user = c.var.user
+
+    const dbUser = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, user.id))
+      .then((res) => res[0])
+
+    if (!dbUser) {
+      await db.insert(users).values({
+        id: user.id,
+        firstName: user.given_name,
+        lastName: user.family_name,
+        email: user.email,
+      })
+    }
+
     return c.json({ user })
   })

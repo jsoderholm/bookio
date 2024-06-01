@@ -8,7 +8,8 @@
     "format": "biome format .",
     "lint": "biome lint .",
     "check": "biome check .",
-    "fix": "biome check --apply ."
+    "fix": "biome check --apply .",
+    "migrate": "bunx drizzle-kit generate && bun migrate.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "1.7.3",
@@ -23,6 +24,7 @@
     "@hono/zod-validator": "^0.2.1",
     "@kinde-oss/kinde-typescript-sdk": "^2.9.1",
     "drizzle-orm": "^0.31.0",
+    "drizzle-zod": "^0.5.1",
     "hono": "^4.4.0",
     "postgres": "^3.4.4",
     "zod": "^3.23.8"

@@ -21,6 +21,9 @@
       },
       "complexity": {
         "noForEach": "off"
+      },
+      "suspicious": {
+        "noConsoleLog": "warn"
       }
     }
   },
