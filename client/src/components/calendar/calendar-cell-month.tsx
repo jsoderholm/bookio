@@ -1,4 +1,9 @@
-import { cn, getCalendarCellMonthStyling, isCellOnFirstRow } from "@/lib/utils"
+import {
+  cn,
+  getCalendarCellMonthStyling,
+  getDayOfTheWeek,
+  isCellOnFirstRow,
+} from "@/lib/utils"
 import { isToday } from "date-fns"
 import { Badge } from "../ui/badge"
 
@@ -13,14 +18,16 @@ const CalendarCellMonth = ({
 }: CalendarCellMonthProps) => {
   const isOnFirstRow = isCellOnFirstRow(activeDate, cellDate)
   const cellDateIsToday = isToday(cellDate)
+  const dayOfTheWeek = getDayOfTheWeek(cellDate)
+
   return (
     <div
       className={cn(
-        "flex flex-col items-center gap-y-1 text-center p-2",
+        "flex flex-col items-center text-center p-2",
         getCalendarCellMonthStyling(activeDate, cellDate),
       )}
     >
-      {isOnFirstRow && <p className="font-semibold text-xs">MON</p>}
+      {isOnFirstRow && <p className="font-semibold text-xs">{dayOfTheWeek}</p>}
       <Badge
         variant={cellDateIsToday ? "default" : "transparent"}
         className={cn(

@@ -112,3 +112,8 @@ export function getCalendarCellMonthStyling(activeDate: Date, cellDate: Date) {
     isOnLastRow && "border-b",
   )
 }
+
+export function getDayOfTheWeek(date: Date) {
+  const dayString = date.toLocaleString("en-US", { weekday: "short" })
+  return dayString.toUpperCase()
+}
