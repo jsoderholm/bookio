@@ -1,3 +1,4 @@
+import CalendarCellMonth from "@/components/calendar/calendar-cell-month"
 import CommandMenu from "@/components/command-menu"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
@@ -9,7 +10,7 @@ import {
 } from "@/components/ui/collapsible"
 import { Separator } from "@/components/ui/separator"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { cn, getBorderClasses, getDaysOnPage, getWeekDay } from "@/lib/utils"
+import { cn, getDaysOnPage } from "@/lib/utils"
 import {
   IconChevronLeft,
   IconChevronRight,
@@ -126,7 +127,7 @@ function CalendarComponent({ month }: { month: Date }) {
 
   return (
     <div className="grid grid-cols-7 h-full">
-      {days.map((e, i) => (
+      {/* {days.map((e, i) => (
         <div
           key={e.toString()}
           className={cn(
@@ -139,6 +140,13 @@ function CalendarComponent({ month }: { month: Date }) {
             <p className="">{e.getDate()}</p>
           </div>
         </div>
+      ))} */}
+      {days.map((date) => (
+        <CalendarCellMonth
+          key={date.toString()}
+          activeDate={month}
+          cellDate={date}
+        />
       ))}
     </div>
   )

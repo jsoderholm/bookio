@@ -5,7 +5,10 @@ import {
   eachDayOfInterval,
   getDay,
   getDaysInMonth,
+  isAfter,
   isBefore,
+  isSameMonth,
+  isSunday,
   setDate,
   subDays,
 } from "date-fns"
@@ -78,39 +81,34 @@ export function getDaysOnPage(date: Date) {
   })
 }
 
-export function getBorderClasses(index: number, date: Date) {
-  const pageSize = getPageSize(date)
-
-  let classes = ""
-
-  if (index % daysInWeek === 1) {
-    classes += "border-l"
-  }
-
-  if (index > pageSize - daysInWeek) {
-    classes += " border-b"
-  }
-  return classes
+export function isLargePageSize(activeDate: Date) {
+  const pageSize = getPageSize(activeDate)
+  return pageSize === LARGE_MONTH_PAGE
 }
 
-export function getWeekDay(day: number) {
-  if (day === 0) {
-    return "SUN"
-  }
-  if (day === 1) {
-    return "MON"
-  }
-  if (day === 2) {
-    return "TUE"
-  }
-  if (day === 3) {
-    return "WED"
-  }
-  if (day === 4) {
-    return "THU"
-  }
-  if (day === 5) {
-    return "FRI"
-  }
-  return "SAT"
+export function isCellInFirstColumn(cellDate: Date) {
+  return isSunday(cellDate)
+}
+
+export function isCellOnFirstRow(activeDate: Date, cellDate: Date) {
+  const endOfFirstWeek = getEndOfFirstWeek(activeDate)
+  return isBefore(cellDate, endOfFirstWeek)
+}
+
+export function getCalendarCellMonthStyling(activeDate: Date, cellDate: Date) {
+  const fifthSaturdayOnActivePage = getFifthSaturdayOnPage(activeDate)
+  const isLargePage = isLargePageSize(activeDate)
+
+  const isNotInActiveMonth = !isSameMonth(cellDate, activeDate)
+  const cellInFirstColumn = isCellInFirstColumn(cellDate)
+  const isOnLastRow =
+    (isAfter(cellDate, fifthSaturdayOnActivePage) && isLargePage) ||
+    (isBefore(cellDate, fifthSaturdayOnActivePage) && !isLargePage)
+
+  return cn(
+    "border-r border-t",
+    isNotInActiveMonth && "text-muted-foreground",
+    cellInFirstColumn && "border-l",
+    isOnLastRow && "border-b",
+  )
 }
