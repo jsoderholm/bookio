@@ -4,7 +4,7 @@ import {
   getDayOfTheWeek,
   isCellOnFirstRow,
 } from "@/lib/utils"
-import { isToday } from "date-fns"
+import { isSameMonth, isToday } from "date-fns"
 import { Badge } from "../ui/badge"
 
 interface CalendarCellMonthProps {
@@ -19,6 +19,7 @@ const CalendarCellMonth = ({
   const isOnFirstRow = isCellOnFirstRow(activeDate, cellDate)
   const cellDateIsToday = isToday(cellDate)
   const dayOfTheWeek = getDayOfTheWeek(cellDate)
+  const notInActiveMonth = !isSameMonth(cellDate, activeDate)
 
   return (
     <div
@@ -35,7 +36,9 @@ const CalendarCellMonth = ({
           cellDateIsToday && "text-white",
         )}
       >
-        {cellDate.getDate()}
+        <p className={cn(notInActiveMonth && "text-muted-foreground")}>
+          {cellDate.getDate()}
+        </p>
       </Badge>
     </div>
   )
