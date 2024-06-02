@@ -20,10 +20,9 @@ import {
 import { createFileRoute } from "@tanstack/react-router"
 import { addMonths, subMonths } from "date-fns"
 import { useState } from "react"
-import type { DateRange } from "react-day-picker"
 
 function Component() {
-  const [date, setDate] = useState<DateRange | undefined>()
+  const [date, setDate] = useState<Date | undefined>()
   const [isOpen, setIsOpen] = useState(false)
 
   const [currentMonth, setCurrentMonth] = useState(new Date())
@@ -44,7 +43,14 @@ function Component() {
             </TabsTrigger>
           </TabsList>
         </Tabs>
-        <Calendar mode="range" selected={date} onSelect={setDate} />
+        <Calendar
+          mode="single"
+          selected={date}
+          onSelect={(date) => {
+            setCurrentMonth(date ?? new Date())
+            setDate(date)
+          }}
+        />
         <Separator />
         <div className="w-full">
           <Collapsible

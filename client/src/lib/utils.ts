@@ -81,6 +81,17 @@ export function getDaysOnPage(date: Date) {
   })
 }
 
+export function getSecondToLastSaturdayOnPage(date: Date) {
+  const isLargePage = isLargePageSize(date)
+  const endOfFirstWeek = getEndOfFirstWeek(date)
+
+  if (isLargePage) {
+    return addWeeks(endOfFirstWeek, 4)
+  }
+
+  return addWeeks(endOfFirstWeek, 3)
+}
+
 export function isLargePageSize(activeDate: Date) {
   const pageSize = getPageSize(activeDate)
   return pageSize === LARGE_MONTH_PAGE
@@ -96,14 +107,11 @@ export function isCellOnFirstRow(activeDate: Date, cellDate: Date) {
 }
 
 export function getCalendarCellMonthStyling(activeDate: Date, cellDate: Date) {
-  const fifthSaturdayOnActivePage = getFifthSaturdayOnPage(activeDate)
-  const isLargePage = isLargePageSize(activeDate)
+  const secondToLastSaturdayOnPage = getSecondToLastSaturdayOnPage(activeDate)
 
+  const isOnLastRow = isAfter(cellDate, secondToLastSaturdayOnPage)
   const isNotInActiveMonth = !isSameMonth(cellDate, activeDate)
   const cellInFirstColumn = isCellInFirstColumn(cellDate)
-  const isOnLastRow =
-    (isAfter(cellDate, fifthSaturdayOnActivePage) && isLargePage) ||
-    (isBefore(cellDate, fifthSaturdayOnActivePage) && !isLargePage)
 
   return cn(
     "border-r border-t",
