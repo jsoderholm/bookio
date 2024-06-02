@@ -5,7 +5,6 @@ import {
   IconUsers,
 } from "@tabler/icons-react"
 import { Link } from "@tanstack/react-router"
-import CommandMenu from "../command-menu"
 import { Button } from "../ui/button"
 import { Separator } from "../ui/separator"
 import { Sheet, SheetContent, SheetHeader, SheetTrigger } from "../ui/sheet"
@@ -15,7 +14,7 @@ import Notifications from "./notifications"
 
 const TopBar = () => {
   return (
-    <nav className="fixed top-0 z-10 left-0 right-0 flex items-center justify-between h-20 sm:h-24 px-4 border-b sm:ml-24 bg-background ">
+    <nav className="fixed top-0 z-10 left-0 right-0 flex items-center justify-between sm:justify-end h-20 sm:h-20 px-4 border-b sm:ml-20 bg-background ">
       <Sheet>
         <SheetTrigger className="block sm:hidden" asChild>
           <Button size="icon" variant="ghost">
@@ -55,7 +54,6 @@ const TopBar = () => {
           </div>
         </SheetContent>
       </Sheet>
-      <CommandMenu className="hidden sm:block" />
       <div className="flex sm:space-x-6 space-x-4 items-center justify-center h-full">
         <Notifications />
         <ModeToggle />

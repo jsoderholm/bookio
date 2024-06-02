@@ -10,7 +10,12 @@ import {
 } from "@/components/ui/command"
 import type { BaseComponentProps } from "@/lib/common/types"
 import { cn } from "@/lib/utils"
-import { IconCalendar, IconLogout, IconUsers } from "@tabler/icons-react"
+import {
+  IconCalendar,
+  IconLogout,
+  IconPlus,
+  IconUsers,
+} from "@tabler/icons-react"
 import { useNavigate } from "@tanstack/react-router"
 import { useEffect, useState } from "react"
 
@@ -40,6 +45,10 @@ const CommandMenu = ({ className }: CommandMenuProps) => {
           navigate({ to: "/" })
           setOpen(false)
         }
+        if (e.key === "e" && (e.metaKey || e.ctrlKey)) {
+          e.preventDefault()
+          setOpen(false)
+        }
       }
 
       document.addEventListener("keydown", down)
@@ -51,25 +60,51 @@ const CommandMenu = ({ className }: CommandMenuProps) => {
   }, [open, navigate])
 
   return (
-    <>
-      <p
+    <div>
+      <kbd
+        style={{
+          boxShadow:
+            "inset 0 -2px 0 0 #cdcde6, inset 0 0 1px 1px #fff, 0 1px 2px 1px rgba(30, 35, 90, 0.4)",
+          background: "linear-gradient(-225deg, #d5dbe4, #f8f8f8)",
+          height: "28px",
+          paddingLeft: "0.5rem",
+          paddingRight: "0.5rem",
+        }}
         className={cn(
-          "items-center flex text-md text-muted-foreground ",
+          " pointer-events-none inline-flex select-none items-center gap-1 rounded border bg-muted px-2 font-mono text-[10px] font-medium text-muted-foreground opacity-100",
           className,
         )}
       >
-        Press{" "}
-        <kbd className="pointer-events-none inline-flex h-7 mr-2 select-none items-center gap-1 rounded border bg-muted px-2 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
-          <span className="text-sm">⌘</span>
-        </kbd>
-        <kbd className="pointer-events-none inline-flex h-7 select-none items-center gap-1 rounded border bg-muted px-2 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
-          <span className="text-sm">K</span>
-        </kbd>
-      </p>
+        <span className="text-sm">⌘</span>
+      </kbd>
+      <kbd
+        style={{
+          boxShadow:
+            "inset 0 -2px 0 0 #cdcde6, inset 0 0 1px 1px #fff, 0 1px 2px 1px rgba(30, 35, 90, 0.4)",
+          background: "linear-gradient(-225deg, #d5dbe4, #f8f8f8)",
+          height: "28px",
+          paddingLeft: "0.5rem",
+          paddingRight: "0.5rem",
+        }}
+        className={cn(
+          "ml-4 pointer-events-none inline-flex select-none items-center gap-1 rounded border bg-muted px-2 font-mono text-[10px] font-medium text-muted-foreground opacity-100",
+          className,
+        )}
+      >
+        <span className="text-sm">K</span>
+      </kbd>
       <CommandDialog open={open} onOpenChange={setOpen}>
         <CommandInput placeholder="Type a command or search..." />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
+          <CommandGroup heading="Actions">
+            <CommandItem>
+              <IconPlus className="w-4 h-4 mr-2" />
+              <span>Add event</span>
+              <CommandShortcut>⌘E</CommandShortcut>
+            </CommandItem>
+          </CommandGroup>
+          <CommandSeparator />
           <CommandGroup heading="Navigation">
             <CommandItem>
               <IconCalendar
@@ -94,7 +129,7 @@ const CommandMenu = ({ className }: CommandMenuProps) => {
             </CommandItem>
           </CommandGroup>
           <CommandSeparator />
-          <CommandGroup heading="Actions">
+          <CommandGroup>
             <CommandItem>
               <IconLogout className="w-4 h-4 mr-2" />
               <a href="/api/logout">
@@ -104,7 +139,7 @@ const CommandMenu = ({ className }: CommandMenuProps) => {
           </CommandGroup>
         </CommandList>
       </CommandDialog>
-    </>
+    </div>
   )
 }
 
