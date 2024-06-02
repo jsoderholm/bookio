@@ -1,5 +1,6 @@
 import CalendarCellMonth from "@/components/calendar/calendar-cell-month"
 import CommandMenu from "@/components/command-menu"
+import CreateEventModal from "@/components/event/create-event-modal"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -15,7 +16,6 @@ import {
   IconChevronLeft,
   IconChevronRight,
   IconChevronUp,
-  IconPlus,
 } from "@tabler/icons-react"
 import { createFileRoute } from "@tanstack/react-router"
 import { addMonths, subMonths } from "date-fns"
@@ -121,10 +121,7 @@ function Component() {
               Today
             </Button>
             <CommandMenu />
-            <Button>
-              <IconPlus className="w-4 h-4 mr-2" />
-              <span>Add Event</span>
-            </Button>
+            <CreateEventModal />
           </div>
         </div>
         <CalendarComponent month={currentMonth} />
