@@ -10,7 +10,12 @@ import {
 } from "@/components/ui/command"
 import type { BaseComponentProps } from "@/lib/common/types"
 import { cn } from "@/lib/utils"
-import { IconCalendar, IconLogout, IconUsers } from "@tabler/icons-react"
+import {
+  IconCalendar,
+  IconLogout,
+  IconPlus,
+  IconUsers,
+} from "@tabler/icons-react"
 import { useNavigate } from "@tanstack/react-router"
 import { useEffect, useState } from "react"
 
@@ -38,6 +43,10 @@ const CommandMenu = ({ className }: CommandMenuProps) => {
         if (e.key === "c" && (e.metaKey || e.ctrlKey)) {
           e.preventDefault()
           navigate({ to: "/" })
+          setOpen(false)
+        }
+        if (e.key === "e" && (e.metaKey || e.ctrlKey)) {
+          e.preventDefault()
           setOpen(false)
         }
       }
@@ -88,6 +97,14 @@ const CommandMenu = ({ className }: CommandMenuProps) => {
         <CommandInput placeholder="Type a command or search..." />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
+          <CommandGroup heading="Actions">
+            <CommandItem>
+              <IconPlus className="w-4 h-4 mr-2" />
+              <span>Add event</span>
+              <CommandShortcut>⌘E</CommandShortcut>
+            </CommandItem>
+          </CommandGroup>
+          <CommandSeparator />
           <CommandGroup heading="Navigation">
             <CommandItem>
               <IconCalendar
@@ -112,7 +129,7 @@ const CommandMenu = ({ className }: CommandMenuProps) => {
             </CommandItem>
           </CommandGroup>
           <CommandSeparator />
-          <CommandGroup heading="Actions">
+          <CommandGroup>
             <CommandItem>
               <IconLogout className="w-4 h-4 mr-2" />
               <a href="/api/logout">

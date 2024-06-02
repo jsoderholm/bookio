@@ -108,7 +108,12 @@ function Component() {
             </h1>
           </div>
           <div className="flex items-center gap-x-4">
-            <Button variant="outline">Today</Button>
+            <Button
+              variant="outline"
+              onClick={() => setCurrentMonth(new Date())}
+            >
+              Today
+            </Button>
             <CommandMenu />
             <Button>
               <IconPlus className="w-4 h-4 mr-2" />
@@ -127,20 +132,6 @@ function CalendarComponent({ month }: { month: Date }) {
 
   return (
     <div className="grid grid-cols-7 h-full">
-      {/* {days.map((e, i) => (
-        <div
-          key={e.toString()}
-          className={cn(
-            "bg-neutral border-red-500 dark:bg-background border-t border-r",
-            getBorderClasses(i + 1, e),
-          )}
-        >
-          <div className="flex flex-col gap-y-1 m-2 text-center text-sm">
-            {i < 7 && <p className="font-medium">{getWeekDay(i)}</p>}
-            <p className="">{e.getDate()}</p>
-          </div>
-        </div>
-      ))} */}
       {days.map((date) => (
         <CalendarCellMonth
           key={date.toString()}
