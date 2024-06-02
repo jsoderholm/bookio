@@ -23,7 +23,7 @@ import { useState } from "react"
 
 function Component() {
   const [date, setDate] = useState<Date | undefined>()
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(true)
 
   const [currentMonth, setCurrentMonth] = useState(new Date())
 
