@@ -51,21 +51,39 @@ const CommandMenu = ({ className }: CommandMenuProps) => {
   }, [open, navigate])
 
   return (
-    <>
-      <p
+    <div>
+      <kbd
+        style={{
+          boxShadow:
+            "inset 0 -2px 0 0 #cdcde6, inset 0 0 1px 1px #fff, 0 1px 2px 1px rgba(30, 35, 90, 0.4)",
+          background: "linear-gradient(-225deg, #d5dbe4, #f8f8f8)",
+          height: "28px",
+          paddingLeft: "0.5rem",
+          paddingRight: "0.5rem",
+        }}
         className={cn(
-          "items-center flex text-md text-muted-foreground ",
+          " pointer-events-none inline-flex select-none items-center gap-1 rounded border bg-muted px-2 font-mono text-[10px] font-medium text-muted-foreground opacity-100",
           className,
         )}
       >
-        Press{" "}
-        <kbd className="pointer-events-none inline-flex h-7 mr-2 select-none items-center gap-1 rounded border bg-muted px-2 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
-          <span className="text-sm">⌘</span>
-        </kbd>
-        <kbd className="pointer-events-none inline-flex h-7 select-none items-center gap-1 rounded border bg-muted px-2 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
-          <span className="text-sm">K</span>
-        </kbd>
-      </p>
+        <span className="text-sm">⌘</span>
+      </kbd>
+      <kbd
+        style={{
+          boxShadow:
+            "inset 0 -2px 0 0 #cdcde6, inset 0 0 1px 1px #fff, 0 1px 2px 1px rgba(30, 35, 90, 0.4)",
+          background: "linear-gradient(-225deg, #d5dbe4, #f8f8f8)",
+          height: "28px",
+          paddingLeft: "0.5rem",
+          paddingRight: "0.5rem",
+        }}
+        className={cn(
+          "ml-4 pointer-events-none inline-flex select-none items-center gap-1 rounded border bg-muted px-2 font-mono text-[10px] font-medium text-muted-foreground opacity-100",
+          className,
+        )}
+      >
+        <span className="text-sm">K</span>
+      </kbd>
       <CommandDialog open={open} onOpenChange={setOpen}>
         <CommandInput placeholder="Type a command or search..." />
         <CommandList>
@@ -104,7 +122,7 @@ const CommandMenu = ({ className }: CommandMenuProps) => {
           </CommandGroup>
         </CommandList>
       </CommandDialog>
-    </>
+    </div>
   )
 }
 
