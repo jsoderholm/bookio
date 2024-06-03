@@ -19,9 +19,14 @@ import {
 import { useNavigate } from "@tanstack/react-router"
 import { useEffect, useState } from "react"
 
-type CommandMenuProps = {} & BaseComponentProps
+type CommandMenuProps = {
+  setCreateEventModalOpen: (open: boolean) => void
+} & BaseComponentProps
 
-const CommandMenu = ({ className }: CommandMenuProps) => {
+const CommandMenu = ({
+  className,
+  setCreateEventModalOpen,
+}: CommandMenuProps) => {
   const [open, setOpen] = useState(false)
   const navigate = useNavigate()
 
@@ -48,6 +53,7 @@ const CommandMenu = ({ className }: CommandMenuProps) => {
         if (e.key === "e" && (e.metaKey || e.ctrlKey)) {
           e.preventDefault()
           setOpen(false)
+          setCreateEventModalOpen(true)
         }
       }
 
@@ -57,7 +63,7 @@ const CommandMenu = ({ className }: CommandMenuProps) => {
 
     document.addEventListener("keydown", down)
     return () => document.removeEventListener("keydown", down)
-  }, [open, navigate])
+  }, [open, navigate, setCreateEventModalOpen])
 
   return (
     <div>
@@ -71,7 +77,7 @@ const CommandMenu = ({ className }: CommandMenuProps) => {
           paddingRight: "0.5rem",
         }}
         className={cn(
-          " pointer-events-none inline-flex select-none items-center gap-1 rounded border bg-muted px-2 font-mono text-[10px] font-medium text-muted-foreground opacity-100",
+          "pointer-events-none inline-flex select-none items-center gap-1 rounded border bg-muted px-2 font-mono text-[10px] font-medium text-muted-foreground opacity-100",
           className,
         )}
       >
@@ -98,7 +104,7 @@ const CommandMenu = ({ className }: CommandMenuProps) => {
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
           <CommandGroup heading="Actions">
-            <CommandItem>
+            <CommandItem onSelect={() => setCreateEventModalOpen(true)}>
               <IconPlus className="w-4 h-4 mr-2" />
               <span>Add event</span>
               <CommandShortcut>⌘E</CommandShortcut>

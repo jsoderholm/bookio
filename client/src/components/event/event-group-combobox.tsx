@@ -76,23 +76,23 @@ type Group = {
 const statuses: Group[] = [
   {
     value: "group-a",
-    label: "Group A",
+    label: "This",
   },
   {
     value: "group-b",
-    label: "Group B",
+    label: "is",
   },
   {
     value: "group-c",
-    label: "Group C",
+    label: "not",
   },
   {
     value: "group-d",
-    label: "Group D",
+    label: "implemented",
   },
   {
     value: "group-e",
-    label: "Group E",
+    label: "yet",
   },
 ]
 
@@ -105,7 +105,7 @@ function StatusList({
 }) {
   return (
     <Command>
-      <CommandInput placeholder="Filter status..." />
+      <CommandInput placeholder="Filter groups..." />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
         <CommandGroup>

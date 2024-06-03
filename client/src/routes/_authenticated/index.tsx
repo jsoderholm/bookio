@@ -23,8 +23,8 @@ import { useState } from "react"
 
 function Component() {
   const [date, setDate] = useState<Date | undefined>()
-  const [isOpen, setIsOpen] = useState(false)
-
+  const [isOpen, setIsOpen] = useState(true)
+  const [createEventModalOpen, setCreateEventModalOpen] = useState(false)
   const [currentMonth, setCurrentMonth] = useState(new Date())
 
   return (
@@ -120,8 +120,11 @@ function Component() {
             >
               Today
             </Button>
-            <CommandMenu />
-            <CreateEventModal />
+            <CommandMenu setCreateEventModalOpen={setCreateEventModalOpen} />
+            <CreateEventModal
+              isOpen={createEventModalOpen}
+              onOpenChange={setCreateEventModalOpen}
+            />
           </div>
         </div>
         <CalendarComponent month={currentMonth} />

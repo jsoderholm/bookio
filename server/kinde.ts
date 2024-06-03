@@ -66,7 +66,6 @@ export const getUser = createMiddleware<Env>(async (c, next) => {
 
     await next()
   } catch (e) {
-    console.error(e)
     return c.json({ error: "Unauthorized" }, 401)
   }
 })
