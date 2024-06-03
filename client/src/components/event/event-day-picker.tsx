@@ -49,12 +49,15 @@ const EventDayPicker = ({ field }: EventDayPickerProps) => {
           mode="range"
           id={field.name}
           onDayBlur={field.handleBlur}
-          defaultMonth={field.state.value.from}
-          selected={field.state.value}
-          onSelect={(e) => {
+          defaultMonth={new Date(field.state.value.from)}
+          selected={{
+            from: new Date(field.state.value.from),
+            to: new Date(field.state.value.to),
+          }}
+          onSelect={(dateRange) => {
             field.handleChange({
-              from: e?.from ?? new Date(),
-              to: e?.to ?? new Date(),
+              from: (dateRange?.from ?? new Date()).toISOString(),
+              to: (dateRange?.to ?? new Date()).toISOString(),
             })
           }}
           numberOfMonths={2}

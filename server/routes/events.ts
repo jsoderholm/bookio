@@ -23,6 +23,8 @@ export const eventRoute = new Hono()
 
     const validatedEvent = insertEventSchema.parse({
       ...event,
+      startDate: event.dateRange.from,
+      endDate: event.dateRange.to,
       createdBy: user.id,
     })
 

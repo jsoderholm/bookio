@@ -30,7 +30,12 @@ import { Input } from "../ui/input"
 import EventDayPicker from "./event-day-picker"
 import EventGroupCombobox from "./event-group-combobox"
 
-const CreateEventModal = () => {
+interface CreateEventModalProps {
+  isOpen: boolean
+  onOpenChange: (open: boolean) => void
+}
+
+const CreateEventModal = ({ isOpen, onOpenChange }: CreateEventModalProps) => {
   const queryClient = useQueryClient()
   const form = useForm({
     validatorAdapter: zodValidator,
@@ -39,12 +44,11 @@ const CreateEventModal = () => {
       description: "",
       location: "",
       dateRange: {
-        from: new Date(),
-        to: new Date(),
+        from: new Date().toISOString(),
+        to: new Date().toISOString(),
       },
     },
     onSubmit: async ({ value }) => {
-      console.info(value)
       const existingEvents = await queryClient.ensureQueryData(
         getAllEventsQueryOptions,
       )
@@ -74,7 +78,7 @@ const CreateEventModal = () => {
     },
   })
   return (
-    <Dialog modal={false}>
+    <Dialog modal={false} open={isOpen} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
         <Button>
           <IconPlus className="w-4 h-4 mr-2" />
@@ -178,7 +182,7 @@ const CreateEventModal = () => {
               <DialogFooter>
                 <Button type="submit" disabled={!canSubmit}>
                   {isSubmitting && (
-                    <IconLoader2 className="h-4 w-4 animate-spin" />
+                    <IconLoader2 className="h-4 w-4 mr-2 animate-spin" />
                   )}
                   Save changes
                 </Button>
