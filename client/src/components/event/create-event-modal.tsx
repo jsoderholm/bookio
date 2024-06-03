@@ -22,6 +22,7 @@ import {
 import { useForm } from "@tanstack/react-form"
 import { useQueryClient } from "@tanstack/react-query"
 import { zodValidator } from "@tanstack/zod-form-adapter"
+import { isSameDay } from "date-fns"
 import { toast } from "sonner"
 import { createEventSchema } from "../../../../common/types/event"
 import FieldInfo from "../field-info"
@@ -33,6 +34,20 @@ import EventGroupCombobox from "./event-group-combobox"
 interface CreateEventModalProps {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
+}
+
+function formatDate(input: string): string {
+  const date = new Date(input)
+  const options: Intl.DateTimeFormatOptions = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  }
+  return new Intl.DateTimeFormat("en-US", options).format(date)
 }
 
 const CreateEventModal = ({ isOpen, onOpenChange }: CreateEventModalProps) => {
@@ -65,12 +80,19 @@ const CreateEventModal = ({ isOpen, onOpenChange }: CreateEventModalProps) => {
           ...existingEvents,
           events: [newEvent, ...existingEvents.events],
         })
-        toast("Event Created", {
-          description: `Successfully created new event: ${newEvent.name}`,
+        toast.success("Event has been created", {
+          description: `${formatDate(newEvent.startDate)} ${
+            isSameDay(new Date(newEvent.startDate), new Date(newEvent.endDate))
+              ? ""
+              : `- ${formatDate(newEvent.endDate)}`
+          }`,
         })
+
+        form.reset()
+        onOpenChange(false)
       } catch (e) {
-        toast("Error", {
-          description: "Failed to create new event",
+        toast.error("Failed to create new event", {
+          description: "Please try again",
         })
       } finally {
         queryClient.setQueryData(loadingCreateEventQueryOptions.queryKey, {})

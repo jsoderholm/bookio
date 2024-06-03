@@ -31,6 +31,7 @@ export const eventRelations = relations(events, ({ one, many }) => ({
 const insertEventSchema = createInsertSchema(events, {
   name: z
     .string()
+    .trim()
     .min(1, { message: "This field may not be left blank" })
     .max(30, { message: "Name must be less than 30 characters" }),
   description: z
