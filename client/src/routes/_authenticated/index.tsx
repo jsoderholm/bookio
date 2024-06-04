@@ -127,21 +127,21 @@ function Component() {
             />
           </div>
         </div>
-        <CalendarComponent month={currentMonth} />
+        <CalendarComponent currentMonth={currentMonth} />
       </div>
     </div>
   )
 }
 
-function CalendarComponent({ month }: { month: Date }) {
-  const days = getDaysOnPage(month)
+function CalendarComponent({ currentMonth }: { currentMonth: Date }) {
+  const days = getDaysOnPage(currentMonth)
 
   return (
     <div className="grid grid-cols-7 h-full">
       {days.map((date) => (
         <CalendarCellMonth
           key={date.toString()}
-          activeDate={month}
+          activeDate={currentMonth}
           cellDate={date}
         />
       ))}
