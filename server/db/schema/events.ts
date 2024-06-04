@@ -9,8 +9,12 @@ export const events = pgTable("events", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 30 }).notNull(),
   description: varchar("description", { length: 250 }),
-  startDate: timestamp("start_date", { mode: "string" }).notNull(),
-  endDate: timestamp("end_date", { mode: "string" }).notNull(),
+  startDate: timestamp("start_date", {
+    mode: "string",
+  }).notNull(),
+  endDate: timestamp("end_date", {
+    mode: "string",
+  }).notNull(),
   location: varchar("location", { length: 100 }),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),

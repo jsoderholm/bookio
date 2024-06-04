@@ -3,9 +3,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { cn } from "@/lib/utils"
+import { cn, formatDateTimeRange } from "@/lib/utils"
 import type { FieldApi } from "@tanstack/react-form"
-import { format } from "date-fns"
 import type { CreateEvent } from "../../../../common/types/event"
 import { Button } from "../ui/button"
 import { Calendar } from "../ui/calendar"
@@ -17,7 +16,7 @@ interface EventDayPickerProps {
 }
 
 const EventDayPicker = ({ field }: EventDayPickerProps) => {
-  const { from, to } = field.state.value
+  const { state, name, handleChange, handleBlur } = field
 
   return (
     <Popover>
@@ -27,40 +26,35 @@ const EventDayPicker = ({ field }: EventDayPickerProps) => {
           variant={"outline"}
           className={cn(
             "w-full justify-start text-left font-normal",
-            !field.state.value && "text-muted-foreground",
+            !state.value && "text-muted-foreground",
           )}
         >
-          {from ? (
-            to ? (
-              <>
-                {format(from, "LLL dd, y")} - {format(to, "LLL dd, y")}
-              </>
-            ) : (
-              format(from, "LLL dd, y")
-            )
-          ) : (
-            <span>Pick a date</span>
-          )}
+          {formatDateTimeRange(state.value.from, state.value.to)}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
         <Calendar
           initialFocus
           mode="range"
-          id={field.name}
-          onDayBlur={field.handleBlur}
-          defaultMonth={new Date(field.state.value.from)}
+          id={name}
+          onDayBlur={handleBlur}
+          defaultMonth={new Date(state.value.from)}
           selected={{
-            from: new Date(field.state.value.from),
-            to: new Date(field.state.value.to),
+            from: new Date(state.value.from),
+            to: new Date(state.value.to),
           }}
-          onSelect={(dateRange) => {
-            field.handleChange({
-              from: (dateRange?.from ?? new Date()).toISOString(),
-              to: (dateRange?.to ?? new Date()).toISOString(),
+          onSelect={(dateRange, day) => {
+            const { from, to } = dateRange ?? {}
+            const fromDate = from ? from : day
+            const toDate = to ? to : day
+
+            handleChange({
+              from: fromDate.toISOString(),
+              to: toDate.toISOString(),
             })
           }}
           numberOfMonths={2}
+          min={0}
         />
       </PopoverContent>
     </Popover>

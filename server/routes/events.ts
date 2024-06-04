@@ -7,13 +7,14 @@ import { events as eventTable, insertEventSchema } from "../db/schema/events"
 import { getUser } from "../kinde"
 
 export const eventRoute = new Hono()
+
   .get("/", getUser, async (c) => {
     const user = c.var.user
 
     const events = await db
       .select()
       .from(eventTable)
-      .where(eq(eventTable.createdBy, user.id))
+      .where(and(eq(eventTable.createdBy, user.id)))
 
     return c.json({ events })
   })

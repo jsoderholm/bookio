@@ -11,6 +11,7 @@ import {
   getAllEventsQueryOptions,
   loadingCreateEventQueryOptions,
 } from "@/lib/api/event"
+import { formatDateTimeRange } from "@/lib/utils"
 import {
   IconAlignJustified,
   IconClock,
@@ -22,7 +23,6 @@ import {
 import { useForm } from "@tanstack/react-form"
 import { useQueryClient } from "@tanstack/react-query"
 import { zodValidator } from "@tanstack/zod-form-adapter"
-import { isSameDay } from "date-fns"
 import { toast } from "sonner"
 import { createEventSchema } from "../../../../common/types/event"
 import FieldInfo from "../field-info"
@@ -34,20 +34,6 @@ import EventGroupCombobox from "./event-group-combobox"
 interface CreateEventModalProps {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
-}
-
-function formatDate(input: string): string {
-  const date = new Date(input)
-  const options: Intl.DateTimeFormatOptions = {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-    hour12: true,
-  }
-  return new Intl.DateTimeFormat("en-US", options).format(date)
 }
 
 const CreateEventModal = ({ isOpen, onOpenChange }: CreateEventModalProps) => {
@@ -80,17 +66,17 @@ const CreateEventModal = ({ isOpen, onOpenChange }: CreateEventModalProps) => {
           ...existingEvents,
           events: [newEvent, ...existingEvents.events],
         })
+
         toast.success("Event has been created", {
-          description: `${formatDate(newEvent.startDate)} ${
-            isSameDay(new Date(newEvent.startDate), new Date(newEvent.endDate))
-              ? ""
-              : `- ${formatDate(newEvent.endDate)}`
-          }`,
+          description: formatDateTimeRange(
+            value.dateRange.from,
+            value.dateRange.to,
+          ),
         })
 
         form.reset()
         onOpenChange(false)
-      } catch (e) {
+      } catch (_e) {
         toast.error("Failed to create new event", {
           description: "Please try again",
         })
@@ -124,18 +110,18 @@ const CreateEventModal = ({ isOpen, onOpenChange }: CreateEventModalProps) => {
             validators={{
               onChange: createEventSchema.shape.name,
             }}
-            children={(field) => (
+            children={({ state, name, handleBlur, handleChange }) => (
               <div className="grid grid-cols-8 items-center gap-4">
                 <div className="col-span-7 col-start-2 flex flex-col gap-y-1">
                   <Input
-                    id={field.name}
-                    name={field.name}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
+                    id={name}
+                    name={name}
+                    value={state.value}
+                    onBlur={handleBlur}
+                    onChange={(e) => handleChange(e.target.value)}
                     placeholder="Add title"
                   />
-                  <FieldInfo field={field} />
+                  <FieldInfo state={state} />
                 </div>
               </div>
             )}
@@ -148,7 +134,7 @@ const CreateEventModal = ({ isOpen, onOpenChange }: CreateEventModalProps) => {
                 <IconClock className="w-5 h-5 text-muted-foreground" />
                 <div className="col-span-7 col-start-2 flex flex-col gap-y-1">
                   <EventDayPicker field={field} />
-                  <FieldInfo field={field} />
+                  <FieldInfo state={field.state} />
                 </div>
               </div>
             )}
@@ -156,19 +142,19 @@ const CreateEventModal = ({ isOpen, onOpenChange }: CreateEventModalProps) => {
           <form.Field
             name="description"
             validators={{ onChange: createEventSchema.shape.description }}
-            children={(field) => (
+            children={({ state, name, handleBlur, handleChange }) => (
               <div className="grid grid-cols-8 items-center gap-4">
                 <IconAlignJustified className="w-5 h-5 text-muted-foreground" />
                 <div className="col-span-7 col-start-2 flex flex-col gap-y-1">
                   <Input
-                    id={field.name}
-                    name={field.name}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
+                    id={name}
+                    name={name}
+                    value={state.value}
+                    onBlur={handleBlur}
+                    onChange={(e) => handleChange(e.target.value)}
                     placeholder="Add description"
                   />
-                  <FieldInfo field={field} />
+                  <FieldInfo state={state} />
                 </div>
               </div>
             )}
@@ -176,20 +162,20 @@ const CreateEventModal = ({ isOpen, onOpenChange }: CreateEventModalProps) => {
           <form.Field
             name="location"
             validators={{ onChange: createEventSchema.shape.location }}
-            children={(field) => (
+            children={({ state, name, handleBlur, handleChange }) => (
               <div className="grid grid-cols-8 items-center gap-4">
                 <IconMapPin className="w-5 h-5 text-muted-foreground" />
                 <div className="col-span-7 col-start-2 flex flex-col gap-y-1">
                   <Input
-                    id={field.name}
-                    name={field.name}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
+                    id={name}
+                    name={name}
+                    value={state.value}
+                    onBlur={handleBlur}
+                    onChange={(e) => handleChange(e.target.value)}
                     placeholder="Add location"
                     className="col-span-7 col-start-2"
                   />
-                  <FieldInfo field={field} />
+                  <FieldInfo state={state} />
                 </div>
               </div>
             )}

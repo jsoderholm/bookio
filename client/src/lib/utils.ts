@@ -13,6 +13,7 @@ import {
   subDays,
 } from "date-fns"
 import { daysInWeek } from "date-fns/constants"
+import { DateTime } from "luxon"
 import { twMerge } from "tailwind-merge"
 import { LARGE_MONTH_PAGE, SMALL_MONTH_PAGE } from "./common/constants"
 
@@ -124,4 +125,30 @@ export function getCalendarCellMonthStyling(activeDate: Date, cellDate: Date) {
 export function getDayOfTheWeek(date: Date) {
   const dayString = date.toLocaleString("en-US", { weekday: "short" })
   return dayString.toUpperCase()
+}
+
+export function getLocalDateTimeISO(date: string) {
+  const utcDate = DateTime.fromISO(date).toLocal().toISO()
+  if (!utcDate) {
+    throw new Error("invalid date")
+  }
+  return utcDate
+}
+
+export function formatDateTimeRange(from: string, to: string) {
+  const startDate = DateTime.fromISO(from).toLocal()
+  const endDate = DateTime.fromISO(to).toLocal()
+
+  if (!startDate.isValid || !endDate.isValid) {
+    throw new Error("invalid date")
+  }
+
+  const formattedStart = startDate.toLocaleString(DateTime.DATE_FULL)
+  const formattedEnd = endDate.toLocaleString(DateTime.DATE_FULL)
+
+  if (startDate.hasSame(endDate, "day")) {
+    return formattedStart
+  }
+
+  return `${formattedStart} - ${formattedEnd}`
 }

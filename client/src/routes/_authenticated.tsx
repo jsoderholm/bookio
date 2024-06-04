@@ -19,7 +19,7 @@ export const Route = createFileRoute("/_authenticated")({
     try {
       const data = await queryClient.fetchQuery(userQueryOptions)
       return data
-    } catch (e) {
+    } catch (_e) {
       return { user: null }
     }
   },
