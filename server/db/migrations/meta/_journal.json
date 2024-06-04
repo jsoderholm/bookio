@@ -36,6 +36,20 @@
       "when": 1717425608757,
       "tag": "0004_faithful_falcon",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1717449263007,
+      "tag": "0005_workable_wolverine",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1717454412248,
+      "tag": "0006_deep_black_panther",
+      "breakpoints": true
     }
   ]
 }
