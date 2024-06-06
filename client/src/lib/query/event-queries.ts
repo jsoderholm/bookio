@@ -1,14 +1,18 @@
-import { queryOptions } from "@tanstack/react-query"
+import {
+  type EventFilter,
+  useAppliedEventFilters,
+} from "@/stores/event-filter-store"
+import { queryOptions, useQuery } from "@tanstack/react-query"
 import { millisecondsInSecond } from "date-fns/constants"
 import { getAllEvents, getEvent } from "../api/event"
 
 export const eventQueries = {
   all: () => ["events"],
   lists: () => [...eventQueries.all(), "list"],
-  list: (from: string) =>
+  list: (filters: EventFilter) =>
     queryOptions({
-      queryKey: [...eventQueries.lists(), from],
-      queryFn: () => getAllEvents({ from }),
+      queryKey: [...eventQueries.lists(), filters],
+      queryFn: () => getAllEvents({ filters }),
     }),
   details: () => [...eventQueries.all(), "detail"],
   detail: (id: number) =>
@@ -17,4 +21,9 @@ export const eventQueries = {
       queryFn: () => getEvent({ id }),
       staleTime: millisecondsInSecond * 20,
     }),
+}
+
+export const useFilteredEvents = () => {
+  const applied = useAppliedEventFilters()
+  return useQuery(eventQueries.list(applied))
 }

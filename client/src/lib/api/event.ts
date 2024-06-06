@@ -1,14 +1,11 @@
+import type { EventFilter } from "@/stores/event-filter-store"
 import { queryOptions } from "@tanstack/react-query"
 import type { CreateEvent } from "../../../../common/types/event"
 import { api } from "./api"
 
-export async function getAllEvents({ from }: { from?: string }) {
-  if (!from) {
-    from = new Date().toISOString()
-  }
-
+export async function getAllEvents({ filters }: { filters: EventFilter }) {
   const res = await api.events[":from"].$get({
-    param: { from },
+    param: { from: filters.firstDay.toISOString() },
   })
   if (!res.ok) {
     throw new Error("server error")

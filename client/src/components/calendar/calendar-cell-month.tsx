@@ -1,6 +1,7 @@
 import {
   cn,
   getCalendarCellMonthStyling,
+  getCurrentMonth,
   getDayOfTheWeek,
   isCellOnFirstRow,
 } from "@/lib/utils"
@@ -8,24 +9,22 @@ import { isSameMonth, isToday } from "date-fns"
 import { Badge } from "../ui/badge"
 
 interface CalendarCellMonthProps {
-  activeDate: Date
+  firstDay: Date
   cellDate: Date
 }
 
-const CalendarCellMonth = ({
-  activeDate,
-  cellDate,
-}: CalendarCellMonthProps) => {
-  const isOnFirstRow = isCellOnFirstRow(activeDate, cellDate)
+const CalendarCellMonth = ({ firstDay, cellDate }: CalendarCellMonthProps) => {
+  const currentMonth = getCurrentMonth(firstDay)
+  const isOnFirstRow = isCellOnFirstRow(currentMonth, cellDate)
   const cellDateIsToday = isToday(cellDate)
   const dayOfTheWeek = getDayOfTheWeek(cellDate)
-  const notInActiveMonth = !isSameMonth(cellDate, activeDate)
+  const notInActiveMonth = !isSameMonth(cellDate, currentMonth)
 
   return (
     <div
       className={cn(
         "flex flex-col items-center text-center p-2",
-        getCalendarCellMonthStyling(activeDate, cellDate),
+        getCalendarCellMonthStyling(currentMonth, cellDate),
       )}
     >
       {isOnFirstRow && <p className="font-semibold text-xs">{dayOfTheWeek}</p>}

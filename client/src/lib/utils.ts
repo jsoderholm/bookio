@@ -1,16 +1,21 @@
+import type { EventFilter } from "@/stores/event-filter-store"
 import { type ClassValue, clsx } from "clsx"
 import {
   addDays,
+  addMonths,
   addWeeks,
   eachDayOfInterval,
   getDay,
   getDaysInMonth,
+  getMonth,
   isAfter,
   isBefore,
   isSameMonth,
   isSunday,
   setDate,
   subDays,
+  subMonths,
+  subWeeks,
 } from "date-fns"
 import { daysInWeek } from "date-fns/constants"
 import { DateTime } from "luxon"
@@ -59,32 +64,10 @@ export function getFifthSaturdayOnPage(date: Date) {
   return addWeeks(endOfFirstWeek, 4)
 }
 
-export function getPageSize(date: Date) {
-  const fifthSaturday = getFifthSaturdayOnPage(date)
-  const lastDayOfTheMonth = getLastDayOfTheMonth(date)
-  // Check if the fifth saturday on the page is before the end of the month
-  const isBeforeEndOfMonth = isBefore(fifthSaturday, lastDayOfTheMonth)
-  return isBeforeEndOfMonth ? LARGE_MONTH_PAGE : SMALL_MONTH_PAGE
-}
-
-export function getEndOfPage(date: Date) {
-  const startOfFirstWeek = getStartOfFirstWeek(date)
-  const pageSize = getPageSize(date)
-  return addDays(startOfFirstWeek, pageSize - 1)
-}
-
-export function getDaysOnPage(date: Date) {
-  const startOfFirstWeek = getStartOfFirstWeek(date)
-  const endOfPage = getEndOfPage(date)
-  return eachDayOfInterval({
-    start: startOfFirstWeek,
-    end: endOfPage,
-  })
-}
-
-export function getSecondToLastSaturdayOnPage(date: Date) {
-  const isLargePage = isLargePageSize(date)
-  const endOfFirstWeek = getEndOfFirstWeek(date)
+export function getSecondToLastSaturdayOnPage(firstDay: Date) {
+  const currentMonth = getCurrentMonth(firstDay)
+  const isLargePage = isLargePageSize(currentMonth)
+  const endOfFirstWeek = getEndOfFirstWeek(currentMonth)
 
   if (isLargePage) {
     return addWeeks(endOfFirstWeek, 4)
@@ -93,8 +76,8 @@ export function getSecondToLastSaturdayOnPage(date: Date) {
   return addWeeks(endOfFirstWeek, 3)
 }
 
-export function isLargePageSize(activeDate: Date) {
-  const pageSize = getPageSize(activeDate)
+export function isLargePageSize(firstDay: Date) {
+  const pageSize = getPageSize({ firstDay, range: "month" })
   return pageSize === LARGE_MONTH_PAGE
 }
 
@@ -107,11 +90,12 @@ export function isCellOnFirstRow(activeDate: Date, cellDate: Date) {
   return isBefore(cellDate, endOfFirstWeek)
 }
 
-export function getCalendarCellMonthStyling(activeDate: Date, cellDate: Date) {
-  const secondToLastSaturdayOnPage = getSecondToLastSaturdayOnPage(activeDate)
+export function getCalendarCellMonthStyling(firstDay: Date, cellDate: Date) {
+  const currentMonth = getCurrentMonth(firstDay)
+  const secondToLastSaturdayOnPage = getSecondToLastSaturdayOnPage(currentMonth)
 
   const isOnLastRow = isAfter(cellDate, secondToLastSaturdayOnPage)
-  const isNotInActiveMonth = !isSameMonth(cellDate, activeDate)
+  const isNotInActiveMonth = !isSameMonth(cellDate, currentMonth)
   const cellInFirstColumn = isCellInFirstColumn(cellDate)
 
   return cn(
@@ -151,4 +135,72 @@ export function formatDateTimeRange(from: string, to: string) {
   }
 
   return `${formattedStart} - ${formattedEnd}`
+}
+
+export function getPageSize({ firstDay, range }: EventFilter): number {
+  // Case 1: Range is "month"
+  if (range === "month") {
+    const currentMonth = getCurrentMonth(firstDay)
+    const fifthSaturday = getFifthSaturdayOnPage(currentMonth)
+    const lastDayOfTheMonth = getLastDayOfTheMonth(currentMonth)
+    // Check if the fifth saturday on the page is before the end of the month
+    const isBeforeEndOfMonth = isBefore(fifthSaturday, lastDayOfTheMonth)
+    return isBeforeEndOfMonth ? LARGE_MONTH_PAGE : SMALL_MONTH_PAGE
+  }
+
+  // Case 2: Range is "week"
+  return daysInWeek
+}
+
+export function getEndOfPage({ firstDay, range }: EventFilter) {
+  const pageSize = getPageSize({ firstDay, range })
+  return addDays(firstDay, pageSize - 1)
+}
+
+export function getCurrentMonth(firstDay: Date): Date {
+  // Get the first saturday of the current page, guaranteed to be in the current month
+  const firstSaturday = addDays(firstDay, 6)
+  const currentMonth = addMonths(firstSaturday, 0)
+  console.table({ firstSaturday, currentMonth })
+  return currentMonth
+}
+
+export function getDaysOnPage({ firstDay, range }: EventFilter) {
+  const endOfPage = getEndOfPage({ firstDay, range })
+  return eachDayOfInterval({
+    start: firstDay,
+    end: endOfPage,
+  })
+}
+
+export function getFirstDayOfCalendar(
+  filters: EventFilter,
+  increment: boolean,
+) {
+  const { firstDay, range } = filters
+
+  if (range === "week") {
+    if (increment) {
+      return addWeeks(firstDay, 1)
+    }
+    return subWeeks(firstDay, 1)
+  }
+
+  // Get the first saturday of the current page and the current month on the calendar
+  const firstSaturday = addDays(firstDay, 6)
+  const currentMonth = getMonth(firstSaturday)
+
+  console.table({ firstSaturday, currentMonth })
+
+  if (increment) {
+    // Get the month that will be displayed on the next page
+    const nextMonth = addMonths(firstSaturday, 1)
+    const startOfFirstWeek = getStartOfFirstWeek(nextMonth)
+    console.table({ nextMonth, startOfFirstWeek })
+    return startOfFirstWeek
+  }
+
+  const previousMonth = subMonths(firstSaturday, 1)
+  const startOfFirstWeek = getStartOfFirstWeek(previousMonth)
+  return startOfFirstWeek
 }

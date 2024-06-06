@@ -8,8 +8,8 @@ import {
 } from "@/components/ui/dialog"
 import { createEvent, loadingCreateEventQueryOptions } from "@/lib/api/event"
 import { eventQueries } from "@/lib/query/event-queries"
-import { formatDateTimeRange, getStartOfFirstWeek } from "@/lib/utils"
-import { useActiveMonth } from "@/stores/calendar-store"
+import { formatDateTimeRange } from "@/lib/utils"
+import { useAppliedEventFilters } from "@/stores/event-filter-store"
 import {
   IconAlignJustified,
   IconClock,
@@ -36,8 +36,8 @@ interface CreateEventModalProps {
 
 const CreateEventModal = ({ isOpen, onOpenChange }: CreateEventModalProps) => {
   const queryClient = useQueryClient()
-  const activeMonth = useActiveMonth()
-  const firstDay = getStartOfFirstWeek(activeMonth)
+  const filters = useAppliedEventFilters()
+
   const form = useForm({
     validatorAdapter: zodValidator,
     defaultValues: {
@@ -51,7 +51,7 @@ const CreateEventModal = ({ isOpen, onOpenChange }: CreateEventModalProps) => {
     },
     onSubmit: async ({ value }) => {
       const existingEvents = await queryClient.ensureQueryData(
-        eventQueries.list(firstDay.toISOString()),
+        eventQueries.list(filters),
       )
 
       queryClient.setQueryData(loadingCreateEventQueryOptions.queryKey, {
@@ -61,13 +61,10 @@ const CreateEventModal = ({ isOpen, onOpenChange }: CreateEventModalProps) => {
       try {
         const newEvent = await createEvent({ value })
 
-        queryClient.setQueryData(
-          eventQueries.list(firstDay.toISOString()).queryKey,
-          {
-            ...existingEvents,
-            events: [newEvent, ...existingEvents.events],
-          },
-        )
+        queryClient.setQueryData(eventQueries.list(filters).queryKey, {
+          ...existingEvents,
+          events: [newEvent, ...existingEvents.events],
+        })
 
         toast.success("Event has been created", {
           description: formatDateTimeRange(

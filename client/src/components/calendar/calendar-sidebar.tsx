@@ -8,8 +8,11 @@ import {
 } from "@/components/ui/collapsible"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import type { BaseComponentProps } from "@/lib/common/types"
-import { cn } from "@/lib/utils"
-import { useCalendarActions } from "@/stores/calendar-store"
+import { cn, getStartOfFirstWeek } from "@/lib/utils"
+import {
+  useAppliedEventFilters,
+  useEventFilterActions,
+} from "@/stores/event-filter-store"
 import { IconChevronUp } from "@tabler/icons-react"
 import { useState } from "react"
 import { Separator } from "../ui/separator"
@@ -18,7 +21,8 @@ type CalendarSidebarProps = {} & BaseComponentProps
 
 const CalendarSidebar = ({ className }: CalendarSidebarProps) => {
   const [isOpen, setIsOpen] = useState(true)
-  const { setActiveMonth } = useCalendarActions()
+  const filters = useAppliedEventFilters()
+  const { addFilter } = useEventFilterActions()
 
   return (
     <div className={cn("space-y-6 p-4 border-r", className)}>
@@ -38,7 +42,10 @@ const CalendarSidebar = ({ className }: CalendarSidebarProps) => {
       <Calendar
         mode="single"
         onSelect={(date) => {
-          setActiveMonth(date ?? new Date())
+          addFilter({
+            ...filters,
+            firstDay: getStartOfFirstWeek(date ?? new Date()),
+          })
         }}
       />
       <Separator />

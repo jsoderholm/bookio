@@ -1,18 +1,15 @@
 import type { BaseComponentProps } from "@/lib/common/types"
-import { eventQueries } from "@/lib/query/event-queries"
-import { cn, getDaysOnPage, getStartOfFirstWeek } from "@/lib/utils"
-import { useActiveMonth } from "@/stores/calendar-store"
-import { useQuery } from "@tanstack/react-query"
+import { useFilteredEvents } from "@/lib/query/event-queries"
+import { cn, getDaysOnPage } from "@/lib/utils"
+import { useAppliedEventFilters } from "@/stores/event-filter-store"
 import CalendarCellMonth from "./calendar-cell-month"
 
 type EventCalendarProps = {} & BaseComponentProps
 
 const EventCalendar = (props: EventCalendarProps) => {
-  const activeMonth = useActiveMonth()
-  const days = getDaysOnPage(activeMonth)
-  const firstDay = getStartOfFirstWeek(activeMonth)
-
-  const { data } = useQuery(eventQueries.list(firstDay.toISOString()))
+  const filters = useAppliedEventFilters()
+  const days = getDaysOnPage(filters)
+  const { data } = useFilteredEvents()
   console.info(data)
 
   return (
@@ -20,7 +17,7 @@ const EventCalendar = (props: EventCalendarProps) => {
       {days.map((date) => (
         <CalendarCellMonth
           key={date.toString()}
-          activeDate={activeMonth}
+          firstDay={filters.firstDay}
           cellDate={date}
         />
       ))}
