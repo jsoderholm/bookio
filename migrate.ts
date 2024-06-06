@@ -8,3 +8,4 @@ await migrate(drizzle(migrationClient), {
 })
 
 console.info("migration complete")
+process.exit(0)
