@@ -11,9 +11,11 @@ export const events = pgTable("events", {
   description: varchar("description", { length: 250 }),
   startDate: timestamp("start_date", {
     mode: "string",
+    withTimezone: true,
   }).notNull(),
   endDate: timestamp("end_date", {
     mode: "string",
+    withTimezone: true,
   }).notNull(),
   location: varchar("location", { length: 100 }),
   createdAt: timestamp("created_at").notNull().defaultNow(),

@@ -1,6 +1,9 @@
 import CommandMenu from "@/components/command-menu"
 import CreateEventModal from "@/components/event/create-event-modal"
 import { Button } from "@/components/ui/button"
+import type { BaseComponentProps } from "@/lib/common/types"
+import { cn } from "@/lib/utils"
+import { useActiveMonth, useCalendarActions } from "@/stores/calendar-store"
 import {
   IconAlignCenter,
   IconChevronLeft,
@@ -9,19 +12,15 @@ import {
 import { addMonths, subMonths } from "date-fns"
 import { useState } from "react"
 
-interface CalendarHeaderProps {
-  activeMonth: Date
-  setActiveMonth: (date: Date) => void
-}
+type CalendarHeaderProps = {} & BaseComponentProps
 
-const CalendarHeader = ({
-  activeMonth,
-  setActiveMonth,
-}: CalendarHeaderProps) => {
+const CalendarHeader = (props: CalendarHeaderProps) => {
   const [createEventModalOpen, setCreateEventModalOpen] = useState(false)
+  const activeMonth = useActiveMonth()
+  const { setActiveMonth } = useCalendarActions()
 
   return (
-    <div className="flex items-center justify-between">
+    <div className={cn("flex items-center justify-between", props.className)}>
       <div className="flex items-center">
         <Button
           size="icon"

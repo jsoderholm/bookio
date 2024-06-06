@@ -7,21 +7,18 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import type { BaseComponentProps } from "@/lib/common/types"
 import { cn } from "@/lib/utils"
+import { useCalendarActions } from "@/stores/calendar-store"
 import { IconChevronUp } from "@tabler/icons-react"
 import { useState } from "react"
 import { Separator } from "../ui/separator"
 
-interface CalendarSidebarProps {
-  className?: string
-  setActiveMonth: (date: Date) => void
-}
+type CalendarSidebarProps = {} & BaseComponentProps
 
-const CalendarSidebar = ({
-  className,
-  setActiveMonth,
-}: CalendarSidebarProps) => {
+const CalendarSidebar = ({ className }: CalendarSidebarProps) => {
   const [isOpen, setIsOpen] = useState(true)
+  const { setActiveMonth } = useCalendarActions()
 
   return (
     <div className={cn("space-y-6 p-4 border-r", className)}>

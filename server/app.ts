@@ -10,8 +10,8 @@ app.use("*", logger())
 
 const apiRoutes = app
   .basePath("/api")
-  .route("/", authRoute)
   .route("/events", eventRoute)
+  .route("/", authRoute)
 
 app.get("*", serveStatic({ root: "./client/dist" }))
 app.get("*", serveStatic({ path: "./client/dist/index.html" }))
