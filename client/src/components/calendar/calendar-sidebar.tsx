@@ -7,21 +7,75 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { cn } from "@/lib/utils"
+import type { BaseComponentProps } from "@/lib/common/types"
+import { cn, getCurrentMonth, getStartOfFirstWeek } from "@/lib/utils"
+import {
+  type EventFilter,
+  useAppliedEventFilters,
+  useEventFilterActions,
+} from "@/stores/event-filter-store"
 import { IconChevronUp } from "@tabler/icons-react"
+import { addDays, isSameMonth, isWithinInterval, startOfWeek } from "date-fns"
 import { useState } from "react"
 import { Separator } from "../ui/separator"
 
-interface CalendarSidebarProps {
-  className?: string
-  setActiveMonth: (date: Date) => void
-}
+type CalendarSidebarProps = {} & BaseComponentProps
 
-const CalendarSidebar = ({
-  className,
-  setActiveMonth,
-}: CalendarSidebarProps) => {
+const CalendarSidebar = ({ className }: CalendarSidebarProps) => {
   const [isOpen, setIsOpen] = useState(true)
+  const filters = useAppliedEventFilters()
+  const { addFilter } = useEventFilterActions()
+
+  function handleAddFilter(
+    filters: EventFilter,
+    newRange: EventFilter["range"],
+  ) {
+    const { firstDay, range } = filters
+    if (newRange === range) {
+      return
+    }
+
+    const currentlyDisplayedMonth = getCurrentMonth(firstDay)
+    const currentDate = new Date()
+    const sameMonth = isSameMonth(currentlyDisplayedMonth, currentDate)
+
+    if (newRange === "week") {
+      if (sameMonth) {
+        const startOfCurrentWeek = startOfWeek(currentDate)
+        addFilter({
+          firstDay: startOfCurrentWeek,
+          range: newRange,
+        })
+        return
+      }
+      const start = startOfWeek(currentlyDisplayedMonth)
+      addFilter({
+        firstDay: start,
+        range: newRange,
+      })
+      return
+    }
+
+    if (newRange === "month") {
+      const todaysDateInCurrentWeek = isWithinInterval(currentDate, {
+        start: firstDay,
+        end: addDays(firstDay, 6),
+      })
+      if (todaysDateInCurrentWeek) {
+        addFilter({
+          firstDay: getStartOfFirstWeek(currentDate),
+          range: newRange,
+        })
+        return
+      }
+
+      const wednesday = addDays(firstDay, 3)
+      addFilter({
+        firstDay: getStartOfFirstWeek(wednesday),
+        range: newRange,
+      })
+    }
+  }
 
   return (
     <div className={cn("space-y-6 p-4 border-r", className)}>
@@ -30,10 +84,18 @@ const CalendarSidebar = ({
           <TabsTrigger className="w-full" value="day">
             Day
           </TabsTrigger>
-          <TabsTrigger className="w-full" value="week">
+          <TabsTrigger
+            className="w-full"
+            value="week"
+            onClick={() => handleAddFilter(filters, "week")}
+          >
             Week
           </TabsTrigger>
-          <TabsTrigger className="w-full" value="month">
+          <TabsTrigger
+            className="w-full"
+            value="month"
+            onClick={() => handleAddFilter(filters, "month")}
+          >
             Month
           </TabsTrigger>
         </TabsList>
@@ -41,7 +103,10 @@ const CalendarSidebar = ({
       <Calendar
         mode="single"
         onSelect={(date) => {
-          setActiveMonth(date ?? new Date())
+          addFilter({
+            ...filters,
+            firstDay: getStartOfFirstWeek(date ?? new Date()),
+          })
         }}
       />
       <Separator />

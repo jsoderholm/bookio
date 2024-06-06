@@ -6,12 +6,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import {
-  createEvent,
-  getAllEventsQueryOptions,
-  loadingCreateEventQueryOptions,
-} from "@/lib/api/event"
+import { createEvent, loadingCreateEventQueryOptions } from "@/lib/api/event"
+import { eventQueries } from "@/lib/query/event-queries"
 import { formatDateTimeRange } from "@/lib/utils"
+import { useAppliedEventFilters } from "@/stores/event-filter-store"
 import {
   IconAlignJustified,
   IconClock,
@@ -38,6 +36,8 @@ interface CreateEventModalProps {
 
 const CreateEventModal = ({ isOpen, onOpenChange }: CreateEventModalProps) => {
   const queryClient = useQueryClient()
+  const filters = useAppliedEventFilters()
+
   const form = useForm({
     validatorAdapter: zodValidator,
     defaultValues: {
@@ -51,10 +51,9 @@ const CreateEventModal = ({ isOpen, onOpenChange }: CreateEventModalProps) => {
     },
     onSubmit: async ({ value }) => {
       const existingEvents = await queryClient.ensureQueryData(
-        getAllEventsQueryOptions,
+        eventQueries.list(filters),
       )
 
-      // loading state
       queryClient.setQueryData(loadingCreateEventQueryOptions.queryKey, {
         event: value,
       })
@@ -62,7 +61,7 @@ const CreateEventModal = ({ isOpen, onOpenChange }: CreateEventModalProps) => {
       try {
         const newEvent = await createEvent({ value })
 
-        queryClient.setQueryData(getAllEventsQueryOptions.queryKey, {
+        queryClient.setQueryData(eventQueries.list(filters).queryKey, {
           ...existingEvents,
           events: [newEvent, ...existingEvents.events],
         })

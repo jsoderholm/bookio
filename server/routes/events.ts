@@ -1,5 +1,5 @@
 import { zValidator } from "@hono/zod-validator"
-import { and, eq } from "drizzle-orm"
+import { and, eq, gte } from "drizzle-orm"
 import { Hono } from "hono"
 import { createEventSchema } from "../../common/types/event"
 import { db } from "../db"
@@ -7,14 +7,16 @@ import { events as eventTable, insertEventSchema } from "../db/schema/events"
 import { getUser } from "../kinde"
 
 export const eventRoute = new Hono()
-
-  .get("/", getUser, async (c) => {
+  .get("/:from", getUser, async (c) => {
     const user = c.var.user
+    const from = c.req.param("from")
 
     const events = await db
       .select()
       .from(eventTable)
-      .where(and(eq(eventTable.createdBy, user.id)))
+      .where(
+        and(eq(eventTable.createdBy, user.id), gte(eventTable.startDate, from)),
+      )
 
     return c.json({ events })
   })
@@ -51,6 +53,7 @@ export const eventRoute = new Hono()
     if (!event) {
       return c.notFound()
     }
+
     return c.json({ event })
   })
   .delete("/:id{[0-9]+}", getUser, async (c) => {

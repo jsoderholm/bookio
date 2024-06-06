@@ -1,19 +1,20 @@
-import { getDaysOnPage } from "@/lib/utils"
+import type { BaseComponentProps } from "@/lib/common/types"
+import { cn, getDaysOnPage } from "@/lib/utils"
+import { useAppliedEventFilters } from "@/stores/event-filter-store"
 import CalendarCellMonth from "./calendar-cell-month"
 
-interface EventCalendarProps {
-  activeMonth: Date
-}
+type EventCalendarProps = {} & BaseComponentProps
 
-const EventCalendar = ({ activeMonth }: EventCalendarProps) => {
-  const days = getDaysOnPage(activeMonth)
+const EventCalendar = (props: EventCalendarProps) => {
+  const filters = useAppliedEventFilters()
+  const days = getDaysOnPage(filters)
 
   return (
-    <div className="grid grid-cols-7 h-full">
+    <div className={cn("grid grid-cols-7 h-full", props.className)}>
       {days.map((date) => (
         <CalendarCellMonth
           key={date.toString()}
-          activeDate={activeMonth}
+          filters={filters}
           cellDate={date}
         />
       ))}

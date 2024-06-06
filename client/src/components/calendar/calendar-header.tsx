@@ -1,51 +1,67 @@
 import CommandMenu from "@/components/command-menu"
 import CreateEventModal from "@/components/event/create-event-modal"
 import { Button } from "@/components/ui/button"
+import type { BaseComponentProps } from "@/lib/common/types"
+import { cn, getCurrentMonth, getFirstDayOfCalendar } from "@/lib/utils"
+import {
+  useAppliedEventFilters,
+  useEventFilterActions,
+} from "@/stores/event-filter-store"
 import {
   IconAlignCenter,
   IconChevronLeft,
   IconChevronRight,
 } from "@tabler/icons-react"
-import { addMonths, subMonths } from "date-fns"
 import { useState } from "react"
 
-interface CalendarHeaderProps {
-  activeMonth: Date
-  setActiveMonth: (date: Date) => void
-}
+type CalendarHeaderProps = {} & BaseComponentProps
 
-const CalendarHeader = ({
-  activeMonth,
-  setActiveMonth,
-}: CalendarHeaderProps) => {
+const CalendarHeader = (props: CalendarHeaderProps) => {
   const [createEventModalOpen, setCreateEventModalOpen] = useState(false)
+  const filters = useAppliedEventFilters()
+  const { addFilter } = useEventFilterActions()
 
   return (
-    <div className="flex items-center justify-between">
+    <div className={cn("flex items-center justify-between", props.className)}>
       <div className="flex items-center">
         <Button
           size="icon"
           variant="outline"
           className="mr-4"
-          onClick={() => setActiveMonth(subMonths(activeMonth, 1))}
+          onClick={() =>
+            addFilter({
+              ...filters,
+              firstDay: getFirstDayOfCalendar(filters, false),
+            })
+          }
         >
           <IconChevronLeft />
         </Button>
         <Button
           size="icon"
           variant="outline"
-          onClick={() => setActiveMonth(addMonths(activeMonth, 1))}
+          onClick={() =>
+            addFilter({
+              ...filters,
+              firstDay: getFirstDayOfCalendar(filters, true),
+            })
+          }
         >
           <IconChevronRight />
         </Button>
         <h1 className="text-3xl font-bold ml-4">
-          {activeMonth.toLocaleDateString("en-US", { month: "long" })}
+          {getCurrentMonth(filters.firstDay).toLocaleDateString("en-US", {
+            month: "long",
+          })}
           &nbsp;
-          {activeMonth.getFullYear()}
+          {filters.firstDay.getFullYear()}
         </h1>
       </div>
       <div className="flex items-center gap-x-4">
-        <Button variant="outline" onClick={() => setActiveMonth(new Date())}>
+        <Button
+          variant="outline"
+          onClick={() => addFilter({ ...filters, firstDay: new Date() })}
+        >
           Today
         </Button>
         <CommandMenu setCreateEventModalOpen={setCreateEventModalOpen} />

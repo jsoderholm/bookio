@@ -1,9 +1,12 @@
+import type { EventFilter } from "@/stores/event-filter-store"
 import { queryOptions } from "@tanstack/react-query"
 import type { CreateEvent } from "../../../../common/types/event"
 import { api } from "./api"
 
-export async function getAllEvents() {
-  const res = await api.events.$get()
+export async function getAllEvents({ filters }: { filters: EventFilter }) {
+  const res = await api.events[":from"].$get({
+    param: { from: filters.firstDay.toISOString() },
+  })
   if (!res.ok) {
     throw new Error("server error")
   }
@@ -13,11 +16,17 @@ export async function getAllEvents() {
   return events
 }
 
-export const getAllEventsQueryOptions = queryOptions({
-  queryKey: ["get-all-events"],
-  queryFn: getAllEvents,
-  staleTime: 1000 * 60 * 5,
-})
+export async function getEvent({ id }: { id: number }) {
+  const res = await api.events[":id{[0-9]+}"].$get({
+    param: { id: id.toString() },
+  })
+  if (!res.ok) {
+    throw new Error("server error")
+  }
+
+  const event = await res.json()
+  return event
+}
 
 export async function createEvent({ value }: { value: CreateEvent }) {
   const res = await api.events.$post({ json: value })
