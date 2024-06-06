@@ -5,15 +5,17 @@ import {
   getDayOfTheWeek,
   isCellOnFirstRow,
 } from "@/lib/utils"
+import type { EventFilter } from "@/stores/event-filter-store"
 import { isSameMonth, isToday } from "date-fns"
 import { Badge } from "../ui/badge"
 
 interface CalendarCellMonthProps {
-  firstDay: Date
+  filters: EventFilter
   cellDate: Date
 }
 
-const CalendarCellMonth = ({ firstDay, cellDate }: CalendarCellMonthProps) => {
+const CalendarCellMonth = ({ filters, cellDate }: CalendarCellMonthProps) => {
+  const { firstDay } = filters
   const currentMonth = getCurrentMonth(firstDay)
   const isOnFirstRow = isCellOnFirstRow(currentMonth, cellDate)
   const cellDateIsToday = isToday(cellDate)
@@ -24,7 +26,7 @@ const CalendarCellMonth = ({ firstDay, cellDate }: CalendarCellMonthProps) => {
     <div
       className={cn(
         "flex flex-col items-center text-center p-2",
-        getCalendarCellMonthStyling(currentMonth, cellDate),
+        getCalendarCellMonthStyling(filters, cellDate),
       )}
     >
       {isOnFirstRow && <p className="font-semibold text-xs">{dayOfTheWeek}</p>}

@@ -7,9 +7,9 @@ import {
   eachDayOfInterval,
   getDay,
   getDaysInMonth,
-  getMonth,
   isAfter,
   isBefore,
+  isSameDay,
   isSameMonth,
   isSunday,
   setDate,
@@ -90,19 +90,31 @@ export function isCellOnFirstRow(activeDate: Date, cellDate: Date) {
   return isBefore(cellDate, endOfFirstWeek)
 }
 
-export function getCalendarCellMonthStyling(firstDay: Date, cellDate: Date) {
-  const currentMonth = getCurrentMonth(firstDay)
-  const secondToLastSaturdayOnPage = getSecondToLastSaturdayOnPage(currentMonth)
+export function getCalendarCellMonthStyling(
+  filters: EventFilter,
+  cellDate: Date,
+) {
+  const { firstDay, range } = filters
 
-  const isOnLastRow = isAfter(cellDate, secondToLastSaturdayOnPage)
-  const isNotInActiveMonth = !isSameMonth(cellDate, currentMonth)
-  const cellInFirstColumn = isCellInFirstColumn(cellDate)
+  if (range === "month") {
+    const currentMonth = getCurrentMonth(firstDay)
+    const secondToLastSaturdayOnPage =
+      getSecondToLastSaturdayOnPage(currentMonth)
+
+    const isOnLastRow = isAfter(cellDate, secondToLastSaturdayOnPage)
+    const isNotInActiveMonth = !isSameMonth(cellDate, currentMonth)
+    const cellInFirstColumn = isCellInFirstColumn(cellDate)
+    return cn(
+      "border-r border-t",
+      isNotInActiveMonth && "text-muted-foreground",
+      cellInFirstColumn && "border-l",
+      isOnLastRow && "border-b",
+    )
+  }
 
   return cn(
-    "border-r border-t",
-    isNotInActiveMonth && "text-muted-foreground",
-    cellInFirstColumn && "border-l",
-    isOnLastRow && "border-b",
+    "border-t border-b border-r",
+    isSameDay(firstDay, cellDate) && "border-l",
   )
 }
 
@@ -161,7 +173,6 @@ export function getCurrentMonth(firstDay: Date): Date {
   // Get the first saturday of the current page, guaranteed to be in the current month
   const firstSaturday = addDays(firstDay, 6)
   const currentMonth = addMonths(firstSaturday, 0)
-  console.table({ firstSaturday, currentMonth })
   return currentMonth
 }
 
@@ -188,15 +199,11 @@ export function getFirstDayOfCalendar(
 
   // Get the first saturday of the current page and the current month on the calendar
   const firstSaturday = addDays(firstDay, 6)
-  const currentMonth = getMonth(firstSaturday)
-
-  console.table({ firstSaturday, currentMonth })
 
   if (increment) {
     // Get the month that will be displayed on the next page
     const nextMonth = addMonths(firstSaturday, 1)
     const startOfFirstWeek = getStartOfFirstWeek(nextMonth)
-    console.table({ nextMonth, startOfFirstWeek })
     return startOfFirstWeek
   }
 
