@@ -7,12 +7,12 @@ export async function getAllEvents({ filters }: { filters: EventFilter }) {
   const res = await api.events[":from"].$get({
     param: { from: filters.firstDay.toISOString() },
   })
+
   if (!res.ok) {
     throw new Error("server error")
   }
 
   const events = await res.json()
-
   return events
 }
 

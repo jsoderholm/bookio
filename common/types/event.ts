@@ -1,5 +1,8 @@
 import { z } from "zod"
-import { insertEventSchema } from "../../server/db/schema/events"
+import {
+  insertEventSchema,
+  type selectEventSchema,
+} from "../../server/db/schema/events"
 
 export const createEventSchema = insertEventSchema
   .omit({
@@ -17,4 +20,5 @@ export const createEventSchema = insertEventSchema
     }),
   })
 
+export type CalendarEvent = z.infer<typeof selectEventSchema>
 export type CreateEvent = z.infer<typeof createEventSchema>

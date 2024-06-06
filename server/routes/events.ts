@@ -1,5 +1,5 @@
 import { zValidator } from "@hono/zod-validator"
-import { and, eq, gte } from "drizzle-orm"
+import { and, eq, gte, lte } from "drizzle-orm"
 import { Hono } from "hono"
 import { createEventSchema } from "../../common/types/event"
 import { db } from "../db"
@@ -15,7 +15,11 @@ export const eventRoute = new Hono()
       .select()
       .from(eventTable)
       .where(
-        and(eq(eventTable.createdBy, user.id), gte(eventTable.startDate, from)),
+        and(
+          eq(eventTable.createdBy, user.id),
+          gte(eventTable.startDate, from),
+          lte(eventTable.endDate, new Date(2024, 7, 6).toISOString()),
+        ),
       )
 
     return c.json({ events })

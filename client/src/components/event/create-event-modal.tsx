@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog"
 import { createEvent, loadingCreateEventQueryOptions } from "@/lib/api/event"
 import { eventQueries } from "@/lib/query/event-queries"
-import { formatDateTimeRange } from "@/lib/utils"
+import { formatDateTimeRange, getEndOfPage } from "@/lib/utils"
 import { useAppliedEventFilters } from "@/stores/event-filter-store"
 import {
   IconAlignJustified,
@@ -21,6 +21,7 @@ import {
 import { useForm } from "@tanstack/react-form"
 import { useQueryClient } from "@tanstack/react-query"
 import { zodValidator } from "@tanstack/zod-form-adapter"
+import { isWithinInterval } from "date-fns"
 import { toast } from "sonner"
 import { createEventSchema } from "../../../../common/types/event"
 import FieldInfo from "../field-info"
@@ -36,6 +37,7 @@ interface CreateEventModalProps {
 
 const CreateEventModal = ({ isOpen, onOpenChange }: CreateEventModalProps) => {
   const queryClient = useQueryClient()
+
   const filters = useAppliedEventFilters()
 
   const form = useForm({
@@ -60,11 +62,16 @@ const CreateEventModal = ({ isOpen, onOpenChange }: CreateEventModalProps) => {
 
       try {
         const newEvent = await createEvent({ value })
-
-        queryClient.setQueryData(eventQueries.list(filters).queryKey, {
-          ...existingEvents,
-          events: [newEvent, ...existingEvents.events],
+        const newEventVisible = isWithinInterval(newEvent.startDate, {
+          start: filters.firstDay,
+          end: getEndOfPage(filters),
         })
+        if (newEventVisible) {
+          queryClient.setQueryData(eventQueries.list(filters).queryKey, {
+            ...existingEvents,
+            events: [newEvent, ...existingEvents.events],
+          })
+        }
 
         toast.success("Event has been created", {
           description: formatDateTimeRange(
@@ -94,7 +101,9 @@ const CreateEventModal = ({ isOpen, onOpenChange }: CreateEventModalProps) => {
       </DialogTrigger>
       <DialogContent position="center" size="default">
         <DialogHeader>
-          <DialogTitle>Add event</DialogTitle>
+          <div className="flex items-center justify-between">
+            <DialogTitle>Add event</DialogTitle>
+          </div>
         </DialogHeader>
         <form
           className="grid gap-4 py-4"
