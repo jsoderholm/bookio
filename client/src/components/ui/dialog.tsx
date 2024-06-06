@@ -74,27 +74,35 @@ export interface DialogProps
     VariantProps<typeof dialogVariants> {
   children?: React.ReactNode
   className?: string
+  withCloseButton?: boolean
 }
 
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   DialogProps
->(({ className, position, size, children, ...props }, ref) => (
-  <DialogPortal>
-    <DialogOverlay />
-    <DialogPrimitive.Content
-      ref={ref}
-      className={cn(dialogVariants({ position, size }), className)}
-      {...props}
-    >
-      {children}
-      <DialogPrimitive.Close className="absolute left-auto right-2 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-40 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
-        <X className="h-4 w-4" />
-        <span className="sr-only">Close</span>
-      </DialogPrimitive.Close>
-    </DialogPrimitive.Content>
-  </DialogPortal>
-))
+>(
+  (
+    { className, position, size, withCloseButton = true, children, ...props },
+    ref,
+  ) => (
+    <DialogPortal>
+      <DialogOverlay />
+      <DialogPrimitive.Content
+        ref={ref}
+        className={cn(dialogVariants({ position, size }), className)}
+        {...props}
+      >
+        {children}
+        {withCloseButton && (
+          <DialogPrimitive.Close className="absolute left-auto right-2 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-40 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+            <X className="h-4 w-4" />
+            <span className="sr-only">Close</span>
+          </DialogPrimitive.Close>
+        )}
+      </DialogPrimitive.Content>
+    </DialogPortal>
+  ),
+)
 DialogContent.displayName = DialogPrimitive.Content.displayName
 
 const DialogHeader = ({

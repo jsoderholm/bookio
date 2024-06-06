@@ -54,6 +54,11 @@ const insertEventSchema = createInsertSchema(events, {
     .optional(),
 })
 // Schema for selecting an event - can be used to validate API responses
-const selectEventSchema = createSelectSchema(events)
+const selectEventSchema = createSelectSchema(events, {
+  startDate: z.string(),
+  endDate: z.string(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+})
 
 export { insertEventSchema, selectEventSchema }

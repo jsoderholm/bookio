@@ -20,6 +20,7 @@ import {
 import { daysInWeek } from "date-fns/constants"
 import { DateTime } from "luxon"
 import { twMerge } from "tailwind-merge"
+import type { CalendarEvent } from "../../../common/types/event"
 import { LARGE_MONTH_PAGE, SMALL_MONTH_PAGE } from "./common/constants"
 
 export function cn(...inputs: ClassValue[]) {
@@ -176,12 +177,22 @@ export function getCurrentMonth(firstDay: Date): Date {
   return currentMonth
 }
 
-export function getDaysOnPage({ firstDay, range }: EventFilter) {
+export function getDaysOnPage({ firstDay, range }: EventFilter): {
+  [key: string]: CalendarEvent[]
+} {
   const endOfPage = getEndOfPage({ firstDay, range })
-  return eachDayOfInterval({
+  const datesArray = eachDayOfInterval({
     start: firstDay,
     end: endOfPage,
   })
+  const dates = datesArray.reduce(
+    (acc, date) => {
+      acc[date.toISOString()] = []
+      return acc
+    },
+    {} as { [key: string]: CalendarEvent[] },
+  )
+  return dates
 }
 
 export function getFirstDayOfCalendar(
