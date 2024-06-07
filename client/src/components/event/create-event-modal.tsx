@@ -6,8 +6,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { createEvent, loadingCreateEventQueryOptions } from "@/lib/api/event"
-import { eventQueries } from "@/lib/query/event-queries"
+import { createEvent } from "@/lib/api/event"
+import {
+  eventQueries,
+  loadingCreateEventQueryOptions,
+} from "@/lib/query/event-queries"
 import { formatDateTimeRange, getEndOfPage } from "@/lib/utils"
 import { useAppliedEventFilters } from "@/stores/event-filter-store"
 import {

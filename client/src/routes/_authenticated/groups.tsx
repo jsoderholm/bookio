@@ -1,46 +1,35 @@
+import CreatePostForm from "@/components/groups/create-post-form"
+import GroupsSidebar from "@/components/groups/groups-sidebar"
+import Post, { PostSkeleton } from "@/components/groups/post"
+import {
+  loadingCreatePostQueryOptions,
+  postQueries,
+} from "@/lib/query/post-queries"
+import { useQuery } from "@tanstack/react-query"
+
 import { createFileRoute } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/_authenticated/groups")({
-  component: () => (
-    <div className="grid grid-cols-1 gap-4 mb-4 sm:grid-cols-2 lg:grid-cols-4">
-      <div className="h-32 border-2 border-gray-300 border-dashed rounded-lg dark:border-gray-600 md:h-64" />
-      <div className="h-32 border-2 border-gray-300 border-dashed rounded-lg dark:border-gray-600 md:h-64" />
-      <div className="h-32 border-2 border-gray-300 border-dashed rounded-lg dark:border-gray-600 md:h-64" />
-      <div className="h-32 border-2 border-gray-300 border-dashed rounded-lg dark:border-gray-600 md:h-64" />
+  component: Component,
+})
 
-      <div className="mb-4 border-2 border-gray-300 border-dashed rounded-lg dark:border-gray-600 h-96" />
-      <div className="grid grid-cols-2 gap-4 mb-4">
-        <div className="h-48 border-2 border-gray-300 border-dashed rounded-lg dark:border-gray-600 md:h-72" />
-        <div className="h-48 border-2 border-gray-300 border-dashed rounded-lg dark:border-gray-600 md:h-72" />
-        <div className="h-48 border-2 border-gray-300 border-dashed rounded-lg dark:border-gray-600 md:h-72" />
-        <div className="h-48 border-2 border-gray-300 border-dashed rounded-lg dark:border-gray-600 md:h-72" />
-      </div>
-      <div className="mb-4 border-2 border-gray-300 border-dashed rounded-lg dark:border-gray-600 h-96" />
-      <div className="grid grid-cols-2 gap-4">
-        <div className="h-48 border-2 border-gray-300 border-dashed rounded-lg dark:border-gray-600 md:h-72" />
-        <div className="h-48 border-2 border-gray-300 border-dashed rounded-lg dark:border-gray-600 md:h-72" />
-        <div className="h-48 border-2 border-gray-300 border-dashed rounded-lg dark:border-gray-600 md:h-72" />
-        <div className="h-48 border-2 border-gray-300 border-dashed rounded-lg dark:border-gray-600 md:h-72" />
-      </div>
-      <div className="h-32 border-2 border-gray-300 border-dashed rounded-lg dark:border-gray-600 md:h-64" />
-      <div className="h-32 border-2 border-gray-300 border-dashed rounded-lg dark:border-gray-600 md:h-64" />
-      <div className="h-32 border-2 border-gray-300 border-dashed rounded-lg dark:border-gray-600 md:h-64" />
-      <div className="h-32 border-2 border-gray-300 border-dashed rounded-lg dark:border-gray-600 md:h-64" />
+function Component() {
+  const { data, isPending, error } = useQuery(postQueries.list())
+  const { data: loadingCreatePost } = useQuery(loadingCreatePostQueryOptions)
 
-      <div className="mb-4 border-2 border-gray-300 border-dashed rounded-lg dark:border-gray-600 h-96" />
-      <div className="grid grid-cols-2 gap-4 mb-4">
-        <div className="h-48 border-2 border-gray-300 border-dashed rounded-lg dark:border-gray-600 md:h-72" />
-        <div className="h-48 border-2 border-gray-300 border-dashed rounded-lg dark:border-gray-600 md:h-72" />
-        <div className="h-48 border-2 border-gray-300 border-dashed rounded-lg dark:border-gray-600 md:h-72" />
-        <div className="h-48 border-2 border-gray-300 border-dashed rounded-lg dark:border-gray-600 md:h-72" />
-      </div>
-      <div className="mb-4 border-2 border-gray-300 border-dashed rounded-lg dark:border-gray-600 h-96" />
-      <div className="grid grid-cols-2 gap-4">
-        <div className="h-48 border-2 border-gray-300 border-dashed rounded-lg dark:border-gray-600 md:h-72" />
-        <div className="h-48 border-2 border-gray-300 border-dashed rounded-lg dark:border-gray-600 md:h-72" />
-        <div className="h-48 border-2 border-gray-300 border-dashed rounded-lg dark:border-gray-600 md:h-72" />
-        <div className="h-48 border-2 border-gray-300 border-dashed rounded-lg dark:border-gray-600 md:h-72" />
+  if (error) return `An error occurred: ${error.message}`
+  return (
+    <div className="flex h-full">
+      <GroupsSidebar />
+      <div className="flex-1 gap-4 container">
+        <CreatePostForm />
+        {loadingCreatePost?.post && <PostSkeleton />}
+        {isPending
+          ? Array.from({ length: 5 }, (_, i) => i + 1).map((e) => (
+              <PostSkeleton key={e} />
+            ))
+          : data.posts.map((post) => <Post key={post.id} post={post} />)}
       </div>
     </div>
-  ),
-})
+  )
+}
