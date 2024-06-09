@@ -12,6 +12,7 @@ import { useQueryClient } from "@tanstack/react-query"
 import { zodValidator } from "@tanstack/zod-form-adapter"
 import { toast } from "sonner"
 import { createPostSchema } from "../../../../common/types/post"
+import GroupCombobox from "../group-combobox"
 
 const CreatePostForm = () => {
   const queryClient = useQueryClient()
@@ -20,6 +21,7 @@ const CreatePostForm = () => {
     validatorAdapter: zodValidator,
     defaultValues: {
       text: "",
+      groupId: "",
     },
     onSubmit: async ({ value }) => {
       const existingPosts = await queryClient.ensureQueryData(
@@ -48,7 +50,7 @@ const CreatePostForm = () => {
   })
   return (
     <form
-      className="grid grid-cols-8 gap-4 p-6 border rounded-md mt-8"
+      className="grid grid-cols-8 gap-4 p-6 border rounded-md"
       onSubmit={(e) => {
         e.preventDefault()
         e.stopPropagation()
@@ -74,8 +76,20 @@ const CreatePostForm = () => {
                 onChange={(e) => handleChange(e.target.value)}
                 placeholder="What do you want to say?"
                 className="col-span-7 col-start-2"
+                rows={4}
               />
             </div>
+          </div>
+        )}
+      />
+      <form.Field
+        name="groupId"
+        validators={{
+          onChange: createPostSchema.shape.groupId,
+        }}
+        children={(field) => (
+          <div className="grid grid-cols-8 col-span-8 items-center gap-4">
+            <GroupCombobox field={field} className="col-span-7 col-start-2" />
           </div>
         )}
       />

@@ -28,10 +28,10 @@ import { isWithinInterval } from "date-fns"
 import { toast } from "sonner"
 import { createEventSchema } from "../../../../common/types/event"
 import FieldInfo from "../field-info"
+import GroupCombobox from "../group-combobox"
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
 import EventDayPicker from "./event-day-picker"
-import EventGroupCombobox from "./event-group-combobox"
 
 interface CreateEventModalProps {
   isOpen: boolean
@@ -191,10 +191,24 @@ const CreateEventModal = ({ isOpen, onOpenChange }: CreateEventModalProps) => {
               </div>
             )}
           />
-          <div className="grid grid-cols-8 items-center gap-4">
-            <IconUsers className="w-5 h-5 text-muted-foreground" />
-            <EventGroupCombobox className="col-span-7 col-start-2" />
-          </div>
+          <form.Field
+            name="groupId"
+            validators={{
+              onChange: createEventSchema.shape.groupId,
+            }}
+            children={({ state, name, handleBlur, handleChange }) => (
+              <div className="grid grid-cols-8 items-center gap-4">
+                <IconUsers className="w-5 h-5 text-muted-foreground" />
+                <GroupCombobox
+                  state={state}
+                  handleBlur={handleBlur}
+                  handleChange={handleChange}
+                  className="col-span-7 col-start-2"
+                />
+              </div>
+            )}
+          />
+
           <form.Subscribe
             selector={(state) => [state.canSubmit, state.isSubmitting]}
             children={([canSubmit, isSubmitting]) => (

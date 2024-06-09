@@ -13,36 +13,59 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { useMediaQuery } from "@/hooks/use-media-query"
+import { groupQueries } from "@/lib/query/group-queries"
 import { cn } from "@/lib/utils"
+import type { FieldApi, FieldState, Updater } from "@tanstack/react-form"
+import { useQuery } from "@tanstack/react-query"
 import { useState } from "react"
-import { Button } from "../ui/button"
+import type { GroupMini } from "../../../common/types/group"
+import type { CreatePost } from "../../../common/types/post"
+import { Button } from "./ui/button"
 
-interface EventGroupComboboxProps extends React.HTMLAttributes<HTMLDivElement> {
+interface GroupComboboxProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string
+  state: FieldState<string>
+  handleChange: (updater: Updater<string>) => void
+}
+interface GroupComboboxProps extends React.HTMLAttributes<HTMLDivElement> {
+  className?: string
+  field: Pick<
+    FieldApi<CreatePost, "groupId">,
+    "name" | "handleChange" | "state" | "handleBlur"
+  >
 }
 
-const EventGroupCombobox = (props: EventGroupComboboxProps) => {
-  const [selectedStatus, setSelectedStatus] = useState<Group | null>(null)
+const GroupCombobox = ({
+  state,
+  handleChange,
+  className,
+}: GroupComboboxProps) => {
   const [open, setOpen] = useState(false)
   const isDesktop = useMediaQuery("(min-width: 768px)")
+  const { data, error } = useQuery(groupQueries.list())
 
+  if (error) return `An error occurred: ${error.message}`
+
+  console.log(state.value)
   if (isDesktop) {
     return (
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            className={cn("justify-start", props.className)}
-          >
-            {selectedStatus ? (
-              <>{selectedStatus.label}</>
+          <Button variant="outline" className={cn("justify-start", className)}>
+            {state.value ? state.value : "Add group"}
+            {state.value ? (
+              <>{state.value}</>
             ) : (
               <p className="text-muted-foreground font-normal">Add groups</p>
             )}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="p-0" align="start">
-          <StatusList setOpen={setOpen} setSelectedStatus={setSelectedStatus} />
+          <StatusList
+            setOpen={setOpen}
+            handleChange={handleChange}
+            groups={data?.groups}
+          />
         </PopoverContent>
       </Popover>
     )
@@ -52,8 +75,8 @@ const EventGroupCombobox = (props: EventGroupComboboxProps) => {
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
         <Button variant="outline" className="w-[150px] justify-start">
-          {selectedStatus ? (
-            <>{selectedStatus.label}</>
+          {state.value ? (
+            <>{state.value}</>
           ) : (
             <p className="text-muted-foreground font-normal">Add groups</p>
           )}
@@ -61,47 +84,21 @@ const EventGroupCombobox = (props: EventGroupComboboxProps) => {
       </DrawerTrigger>
       <DrawerContent>
         <div className="mt-4 border-t">
-          <StatusList setOpen={setOpen} setSelectedStatus={setSelectedStatus} />
+          <StatusList setOpen={setOpen} handleChange={handleChange} />
         </div>
       </DrawerContent>
     </Drawer>
   )
 }
 
-type Group = {
-  value: string
-  label: string
-}
-
-const statuses: Group[] = [
-  {
-    value: "group-a",
-    label: "This",
-  },
-  {
-    value: "group-b",
-    label: "is",
-  },
-  {
-    value: "group-c",
-    label: "not",
-  },
-  {
-    value: "group-d",
-    label: "implemented",
-  },
-  {
-    value: "group-e",
-    label: "yet",
-  },
-]
-
 function StatusList({
   setOpen,
-  setSelectedStatus,
+  handleChange,
+  groups,
 }: {
   setOpen: (open: boolean) => void
-  setSelectedStatus: (status: Group | null) => void
+  handleChange: (updater: Updater<string>) => void
+  groups?: GroupMini[]
 }) {
   return (
     <Command>
@@ -109,18 +106,16 @@ function StatusList({
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
         <CommandGroup>
-          {statuses.map((status) => (
+          {groups?.map((group) => (
             <CommandItem
-              key={status.value}
-              value={status.value}
+              key={group.id}
+              value={group.id.toString()}
               onSelect={(value) => {
-                setSelectedStatus(
-                  statuses.find((priority) => priority.value === value) || null,
-                )
+                handleChange(() => value)
                 setOpen(false)
               }}
             >
-              {status.label}
+              {group.name}
             </CommandItem>
           ))}
         </CommandGroup>
@@ -128,4 +123,4 @@ function StatusList({
     </Command>
   )
 }
-export default EventGroupCombobox
+export default GroupCombobox
