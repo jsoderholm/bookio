@@ -12,7 +12,7 @@ import { useQueryClient } from "@tanstack/react-query"
 import { zodValidator } from "@tanstack/zod-form-adapter"
 import { toast } from "sonner"
 import { createPostSchema } from "../../../../common/types/post"
-import GroupCombobox from "../group-combobox"
+import GroupSingleselect from "../group-singleselect"
 
 const CreatePostForm = () => {
   const queryClient = useQueryClient()
@@ -89,7 +89,10 @@ const CreatePostForm = () => {
         }}
         children={(field) => (
           <div className="grid grid-cols-8 col-span-8 items-center gap-4">
-            <GroupCombobox field={field} className="col-span-7 col-start-2" />
+            <GroupSingleselect
+              field={field}
+              className="col-span-7 col-start-2"
+            />
           </div>
         )}
       />

@@ -28,7 +28,7 @@ import { isWithinInterval } from "date-fns"
 import { toast } from "sonner"
 import { createEventSchema } from "../../../../common/types/event"
 import FieldInfo from "../field-info"
-import GroupCombobox from "../group-combobox"
+import GroupMultiselect from "../group-multiselect"
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
 import EventDayPicker from "./event-day-picker"
@@ -53,6 +53,7 @@ const CreateEventModal = ({ isOpen, onOpenChange }: CreateEventModalProps) => {
         from: new Date().toISOString(),
         to: new Date().toISOString(),
       },
+      groups: [] as number[],
     },
     onSubmit: async ({ value }) => {
       const existingEvents = await queryClient.ensureQueryData(
@@ -192,17 +193,15 @@ const CreateEventModal = ({ isOpen, onOpenChange }: CreateEventModalProps) => {
             )}
           />
           <form.Field
-            name="groupId"
+            name="groups"
             validators={{
-              onChange: createEventSchema.shape.groupId,
+              onChange: createEventSchema.shape.groups,
             }}
-            children={({ state, name, handleBlur, handleChange }) => (
-              <div className="grid grid-cols-8 items-center gap-4">
+            children={(field) => (
+              <div className="grid grid-cols-8  items-center gap-4">
                 <IconUsers className="w-5 h-5 text-muted-foreground" />
-                <GroupCombobox
-                  state={state}
-                  handleBlur={handleBlur}
-                  handleChange={handleChange}
+                <GroupMultiselect
+                  field={field}
                   className="col-span-7 col-start-2"
                 />
               </div>
