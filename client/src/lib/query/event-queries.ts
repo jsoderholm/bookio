@@ -2,7 +2,7 @@ import {
   type EventFilter,
   useAppliedEventFilters,
 } from "@/stores/event-filter-store"
-import { queryOptions, useQuery } from "@tanstack/react-query"
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query"
 import { millisecondsInSecond } from "date-fns/constants"
 import type { CreateEvent } from "../../../../common/types/event"
 import { getAllEvents, getEvent } from "../api/event"
@@ -10,11 +10,10 @@ import { getAllEvents, getEvent } from "../api/event"
 export const eventQueries = {
   all: () => ["events"],
   lists: () => [...eventQueries.all(), "list"],
-  list: (filters: EventFilter) =>
-    queryOptions({
-      queryKey: [...eventQueries.lists(), filters],
-      queryFn: () => getAllEvents({ filters }),
-    }),
+  list: (filters: EventFilter) => ({
+    queryKey: [...eventQueries.lists(), filters],
+    queryFn: () => getAllEvents({ filters }),
+  }),
   details: () => [...eventQueries.all(), "detail"],
   detail: (id: number) =>
     queryOptions({
@@ -26,7 +25,7 @@ export const eventQueries = {
 
 export const useFilteredEvents = () => {
   const applied = useAppliedEventFilters()
-  return useQuery(eventQueries.list(applied))
+  return useSuspenseQuery(eventQueries.list(applied))
 }
 
 export const loadingCreateEventQueryOptions = queryOptions<{
