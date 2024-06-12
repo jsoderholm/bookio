@@ -6,11 +6,10 @@ import { getGroup, getGroups } from "../api/group"
 export const groupQueries = {
   all: () => ["groups"],
   lists: () => [...groupQueries.all(), "list"],
-  list: () =>
-    queryOptions({
-      queryKey: [...groupQueries.lists()],
-      queryFn: () => getGroups(),
-    }),
+  list: () => ({
+    queryKey: [...groupQueries.lists()],
+    queryFn: () => getGroups(),
+  }),
   details: () => [...groupQueries.all(), "detail"],
   detail: (id: number) =>
     queryOptions({
