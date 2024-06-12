@@ -1,20 +1,31 @@
 import { zValidator } from "@hono/zod-validator"
-import { and, desc, eq } from "drizzle-orm"
+import { and, eq } from "drizzle-orm"
 import { Hono } from "hono"
 import { createGroupSchema } from "../../common/types/group"
 import { db } from "../db"
 import { insertGroupSchema } from "../db/schema/groups"
 import { groups as groupTable } from "../db/schema/groups"
+import { usersOnGroups } from "../db/schema/junctions"
 import { getUser } from "../kinde"
 
 export const groupRoute = new Hono()
   .get("/", getUser, async (c) => {
     const user = c.var.user
-    const groups = await db
-      .select()
-      .from(groupTable)
-      .where(eq(groupTable.createdBy, user.id))
-      .orderBy(desc(groupTable.createdAt))
+
+    const groups = await db.query.usersOnGroups
+      .findMany({
+        where: (usersOnGroups, { eq }) => eq(usersOnGroups.userId, user.id),
+        with: {
+          group: {
+            columns: {
+              id: true,
+              name: true,
+              description: true,
+            },
+          },
+        },
+      })
+      .then((res) => res.map((group) => group.group))
 
     return c.json({ groups })
   })
@@ -32,6 +43,11 @@ export const groupRoute = new Hono()
       .values(validatedGroup)
       .returning()
       .then((res) => res[0])
+
+    await db.insert(usersOnGroups).values({
+      userId: user.id,
+      groupId: result.id,
+    })
 
     c.status(201)
     return c.json(result)

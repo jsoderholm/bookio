@@ -6,8 +6,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { createEvent, loadingCreateEventQueryOptions } from "@/lib/api/event"
-import { eventQueries } from "@/lib/query/event-queries"
+import { createEvent } from "@/lib/api/event"
+import {
+  eventQueries,
+  loadingCreateEventQueryOptions,
+} from "@/lib/query/event-queries"
 import { formatDateTimeRange, getEndOfPage } from "@/lib/utils"
 import { useAppliedEventFilters } from "@/stores/event-filter-store"
 import {
@@ -25,10 +28,10 @@ import { isWithinInterval } from "date-fns"
 import { toast } from "sonner"
 import { createEventSchema } from "../../../../common/types/event"
 import FieldInfo from "../field-info"
+import GroupMultiselect from "../group-multiselect"
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
 import EventDayPicker from "./event-day-picker"
-import EventGroupCombobox from "./event-group-combobox"
 
 interface CreateEventModalProps {
   isOpen: boolean
@@ -50,6 +53,7 @@ const CreateEventModal = ({ isOpen, onOpenChange }: CreateEventModalProps) => {
         from: new Date().toISOString(),
         to: new Date().toISOString(),
       },
+      groups: [] as number[],
     },
     onSubmit: async ({ value }) => {
       const existingEvents = await queryClient.ensureQueryData(
@@ -188,10 +192,22 @@ const CreateEventModal = ({ isOpen, onOpenChange }: CreateEventModalProps) => {
               </div>
             )}
           />
-          <div className="grid grid-cols-8 items-center gap-4">
-            <IconUsers className="w-5 h-5 text-muted-foreground" />
-            <EventGroupCombobox className="col-span-7 col-start-2" />
-          </div>
+          <form.Field
+            name="groups"
+            validators={{
+              onChange: createEventSchema.shape.groups,
+            }}
+            children={(field) => (
+              <div className="grid grid-cols-8  items-center gap-4">
+                <IconUsers className="w-5 h-5 text-muted-foreground" />
+                <GroupMultiselect
+                  field={field}
+                  className="col-span-7 col-start-2"
+                />
+              </div>
+            )}
+          />
+
           <form.Subscribe
             selector={(state) => [state.canSubmit, state.isSubmitting]}
             children={([canSubmit, isSubmitting]) => (

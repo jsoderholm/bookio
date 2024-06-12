@@ -23,6 +23,7 @@ export const postRoute = new Hono()
 
     const validatedPost = insertPostSchema.parse({
       ...post,
+      groupId: Number.parseInt(post.groupId),
       authorId: user.id,
     })
 

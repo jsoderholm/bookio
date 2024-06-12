@@ -1,5 +1,5 @@
 {
-  "id": "13e23d03-9b87-4de3-9d36-7ebde0a4aaad",
+  "id": "fa291f09-a0e5-4e97-96dc-7319a6317aab",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -88,13 +88,13 @@
         },
         "start_date": {
           "name": "start_date",
-          "type": "timestamp",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true
         },
         "end_date": {
           "name": "end_date",
-          "type": "timestamp",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true
         },
@@ -311,6 +311,12 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "group_id": {
+          "name": "group_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
         }
       },
       "indexes": {},
@@ -320,6 +326,15 @@
           "tableFrom": "posts",
           "tableTo": "users",
           "columnsFrom": ["author_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "posts_group_id_groups_id_fk": {
+          "name": "posts_group_id_groups_id_fk",
+          "tableFrom": "posts",
+          "tableTo": "groups",
+          "columnsFrom": ["group_id"],
           "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"

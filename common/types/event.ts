@@ -18,6 +18,7 @@ export const createEventSchema = insertEventSchema
       from: insertEventSchema.shape.startDate,
       to: insertEventSchema.shape.endDate,
     }),
+    groups: z.array(z.number().int()).default([]),
   })
 
 export type CalendarEvent = z.infer<typeof selectEventSchema>
