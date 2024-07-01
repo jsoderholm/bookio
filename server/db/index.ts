@@ -3,12 +3,7 @@ import postgres from "postgres"
 import { commentRelations, comments } from "./schema/comments"
 import { events, eventRelations } from "./schema/events"
 import { groupRelations, groups } from "./schema/groups"
-import {
-  eventsOnGroups,
-  eventsOnGroupsRelations,
-  usersOnGroups,
-  usersOnGroupsRelations,
-} from "./schema/junctions"
+import { usersOnGroups, usersOnGroupsRelations } from "./schema/junctions"
 import { postRelations, posts } from "./schema/posts"
 import { userRelations, users } from "./schema/users"
 
@@ -25,8 +20,6 @@ export const db = drizzle(queryClient, {
     userRelations,
     comments,
     commentRelations,
-    eventsOnGroups,
-    eventsOnGroupsRelations,
     usersOnGroups,
     usersOnGroupsRelations,
   },
