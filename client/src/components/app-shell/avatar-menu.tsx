@@ -20,7 +20,7 @@ const AvatarMenu = () => {
               John Doe
             </p>
             <p className="text-sm leading-none text-muted-foreground trailing-none">
-              m@example.com
+              mail@example.com
             </p>
           </div>
         </div>
