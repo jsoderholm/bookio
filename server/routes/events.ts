@@ -4,7 +4,6 @@ import { Hono } from "hono"
 import { createEventSchema } from "../../common/types/event"
 import { db } from "../db"
 import { events as eventTable, insertEventSchema } from "../db/schema/events"
-import { eventsOnGroups } from "../db/schema/junctions"
 import { getUser } from "../kinde"
 
 export const eventRoute = new Hono()
@@ -34,6 +33,7 @@ export const eventRoute = new Hono()
       startDate: event.dateRange.from,
       endDate: event.dateRange.to,
       createdBy: user.id,
+      groupId: Number.parseInt(event.groupId),
     })
 
     const createdEvent = await db
@@ -41,15 +41,6 @@ export const eventRoute = new Hono()
       .values(validatedEvent)
       .returning()
       .then((res) => res[0])
-
-    const groupIds = event.groups
-
-    for (const groupId of groupIds) {
-      await db.insert(eventsOnGroups).values({
-        eventId: createdEvent.id,
-        groupId: groupId,
-      })
-    }
 
     c.status(201)
     return c.json(createdEvent)

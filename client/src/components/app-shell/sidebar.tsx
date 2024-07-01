@@ -1,8 +1,4 @@
-import {
-  IconArrowLeftFromArc,
-  IconCalendar,
-  IconUsers,
-} from "@tabler/icons-react"
+import { IconArrowLeftFromArc, IconCalendar } from "@tabler/icons-react"
 import { Link } from "@tanstack/react-router"
 import { Button } from "../ui/button"
 import { Separator } from "../ui/separator"
@@ -30,21 +26,6 @@ const Sidebar = () => {
             </Link>
           </TooltipTrigger>
           <TooltipContent side="right">Calendar</TooltipContent>
-        </Tooltip>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Link
-              to="/groups"
-              className="flex items-center justify-center w-12 h-12 transition-colors rounded-sm text-muted-foreground hover:text-primary "
-              activeProps={{
-                className: "text-primary bg-white dark:bg-muted border",
-              }}
-            >
-              <IconUsers className="w-6 h-6" />
-              <span className="sr-only">Groups</span>
-            </Link>
-          </TooltipTrigger>
-          <TooltipContent side="right">Groups</TooltipContent>
         </Tooltip>
       </div>
       <div className="flex items-center justify-center w-full mt-auto">

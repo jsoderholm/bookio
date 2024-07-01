@@ -1,8 +1,15 @@
 import { relations } from "drizzle-orm"
-import { pgTable, serial, text, timestamp, varchar } from "drizzle-orm/pg-core"
+import {
+  integer,
+  pgTable,
+  serial,
+  text,
+  timestamp,
+  varchar,
+} from "drizzle-orm/pg-core"
 import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 import { z } from "zod"
-import { eventsOnGroups } from "./junctions"
+import { groups } from "./groups"
 import { users } from "./users"
 
 export const events = pgTable("events", {
@@ -23,14 +30,18 @@ export const events = pgTable("events", {
   createdBy: text("created_by")
     .notNull()
     .references(() => users.id),
+  groupId: integer("group_id").references(() => groups.id),
 })
 
-export const eventRelations = relations(events, ({ one, many }) => ({
+export const eventRelations = relations(events, ({ one }) => ({
   createdBy: one(users, {
     fields: [events.createdBy],
     references: [users.id],
   }),
-  groups: many(eventsOnGroups),
+  groupId: one(groups, {
+    fields: [events.groupId],
+    references: [groups.id],
+  }),
 }))
 
 // Schema for inserting an event - can be used to validate API requests

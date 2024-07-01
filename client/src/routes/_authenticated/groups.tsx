@@ -1,4 +1,3 @@
-import CreatePostForm from "@/components/groups/create-post-form"
 import GroupsSidebar from "@/components/groups/groups-sidebar"
 import Post, { PostSkeleton } from "@/components/groups/post"
 import {
@@ -23,7 +22,6 @@ function Component() {
     <div className="flex h-full">
       <GroupsSidebar />
       <div className="flex-1 gap-4 p-4">
-        <CreatePostForm />
         {loadingCreatePost?.post && <PostSkeleton />}
         {isPending
           ? Array.from({ length: 5 }, (_, i) => i + 1).map((e) => (
