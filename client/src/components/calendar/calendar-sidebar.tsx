@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/collapsible"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import type { BaseComponentProps } from "@/lib/common/types"
+import { groupQueries } from "@/lib/query/group-queries"
 import { cn, getCurrentMonth, getStartOfFirstWeek } from "@/lib/utils"
 import {
   type EventFilter,
@@ -17,6 +18,8 @@ import {
 import { IconChevronUp } from "@tabler/icons-react"
 import { addDays, isSameMonth, isWithinInterval, startOfWeek } from "date-fns"
 import { useState } from "react"
+import CreateGroupModal from "../groups/create-group-modal"
+import QuerySuspense from "../suspense/query-suspense"
 import { Separator } from "../ui/separator"
 
 type CalendarSidebarProps = {} & BaseComponentProps
@@ -25,6 +28,7 @@ const CalendarSidebar = ({ className }: CalendarSidebarProps) => {
   const [isOpen, setIsOpen] = useState(true)
   const filters = useAppliedEventFilters()
   const { addFilter } = useEventFilterActions()
+  const [createGroupModalOpen, setCreateGroupModalOpen] = useState(false)
 
   function handleAddFilter(
     filters: EventFilter,
@@ -118,31 +122,38 @@ const CalendarSidebar = ({ className }: CalendarSidebarProps) => {
         >
           <div className="flex items-center justify-between space-x-4 px-4">
             <h3 className="text-sm font-semibold">My Calendars</h3>
-            <CollapsibleTrigger asChild>
-              <Button variant="ghost" size="sm" className="w-9 p-0">
-                <IconChevronUp
-                  className={cn(
-                    "h-4 w-4 transition-transform",
-                    isOpen && "rotate-180",
-                  )}
-                />
-                <span className="sr-only">Toggle</span>
-              </Button>
-            </CollapsibleTrigger>
+            <div className="flex items-center">
+              <CreateGroupModal
+                isOpen={createGroupModalOpen}
+                onOpenChange={setCreateGroupModalOpen}
+              />
+              <CollapsibleTrigger asChild>
+                <Button variant="ghost" size="sm" className="w-9 p-0">
+                  <IconChevronUp
+                    className={cn(
+                      "h-4 w-4 transition-transform",
+                      isOpen && "rotate-180",
+                    )}
+                  />
+                  <span className="sr-only">Toggle</span>
+                </Button>
+              </CollapsibleTrigger>
+            </div>
           </div>
           <CollapsibleContent className="space-y-4">
-            <div className="flex items-center gap-x-4 px-4 font-mono text-sm">
-              <Checkbox className="w-4 h-4" />
-              @bookio/calendar
-            </div>
-            <div className="flex items-center gap-x-4 px-4  font-mono text-sm">
-              <Checkbox className="w-4 h-4" />
-              @bookio/groups
-            </div>
-            <div className="flex items-center gap-x-4 px-4  font-mono text-sm">
-              <Checkbox className="w-4 h-4" />
-              @bookio/home
-            </div>
+            <QuerySuspense query={{ ...groupQueries.list() }}>
+              {(data) =>
+                data.groups.map((group) => (
+                  <div
+                    key={group.id}
+                    className="flex items-center gap-x-4 px-4 text-sm"
+                  >
+                    <Checkbox className="w-4 h-4" />
+                    {group.name}
+                  </div>
+                ))
+              }
+            </QuerySuspense>
           </CollapsibleContent>
         </Collapsible>
       </div>

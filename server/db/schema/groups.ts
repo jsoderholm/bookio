@@ -2,7 +2,8 @@ import { relations } from "drizzle-orm"
 import { pgTable, serial, text, timestamp, varchar } from "drizzle-orm/pg-core"
 import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 import { z } from "zod"
-import { eventsOnGroups, usersOnGroups } from "./junctions"
+import { events } from "./events"
+import { usersOnGroups } from "./junctions"
 import { posts } from "./posts"
 import { users } from "./users"
 
@@ -21,7 +22,7 @@ export const groupRelations = relations(groups, ({ one, many }) => ({
     fields: [groups.createdBy],
     references: [users.id],
   }),
-  events: many(eventsOnGroups),
+  events: many(events),
   members: many(usersOnGroups),
   posts: many(posts),
 }))

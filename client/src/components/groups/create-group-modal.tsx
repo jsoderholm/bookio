@@ -16,8 +16,8 @@ import {
 import {
   IconAlignJustified,
   IconLoader2,
+  IconPlus,
   IconUsers,
-  IconUsersPlus,
   IconX,
 } from "@tabler/icons-react"
 import { useForm } from "@tanstack/react-form"
@@ -75,7 +75,10 @@ const CreateGroupModal = ({ isOpen, onOpenChange }: CreateGroupModalProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
-        <IconUsersPlus className="w-5 h-5 text-muted-foreground cursor-pointer transition-opacity hover:opacity-70" />
+        <Button variant="ghost" size="sm" className="w-9 p-0">
+          <IconPlus className="h-4 w-4" />
+          <span className="sr-only">Create group</span>
+        </Button>
       </DialogTrigger>
       <DialogContent position="center" size="default" withCloseButton={false}>
         <DialogHeader>

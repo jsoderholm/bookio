@@ -12,13 +12,14 @@ export const createEventSchema = insertEventSchema
     createdAt: true,
     updatedAt: true,
     createdBy: true,
+    groupId: true,
   })
   .extend({
     dateRange: z.object({
       from: insertEventSchema.shape.startDate,
       to: insertEventSchema.shape.endDate,
     }),
-    groups: z.array(z.number().int()).default([]),
+    groupId: z.string().regex(/^[1-9]\d*$/),
   })
 
 export type CalendarEvent = z.infer<typeof selectEventSchema>

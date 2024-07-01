@@ -87,10 +87,11 @@ const CreatePostForm = () => {
         validators={{
           onChange: createPostSchema.shape.groupId,
         }}
-        children={(field) => (
+        children={({ state, handleChange }) => (
           <div className="grid grid-cols-8 col-span-8 items-center gap-4">
             <GroupSingleselect
-              field={field}
+              handleChange={handleChange}
+              state={state}
               className="col-span-7 col-start-2"
             />
           </div>
