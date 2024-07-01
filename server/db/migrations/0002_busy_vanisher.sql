@@ -1,0 +1,1 @@
+DROP TABLE "events_on_groups";

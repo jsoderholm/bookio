@@ -15,6 +15,13 @@
       "when": 1719849509706,
       "tag": "0001_curvy_mongoose",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1719858812710,
+      "tag": "0002_busy_vanisher",
+      "breakpoints": true
     }
   ]
 }
